@@ -1,4 +1,5 @@
 import { IconProps, ICON_SIZE } from '@/shared/constants/icon';
+import { cn } from '@/shared/lib/cn';
 
 export const IconEyeClose = ({ size = ICON_SIZE.md, className, ...props }: IconProps) => {
   return (
@@ -8,7 +9,7 @@ export const IconEyeClose = ({ size = ICON_SIZE.md, className, ...props }: IconP
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={cn(className)}
       {...props}
     >
       <path
