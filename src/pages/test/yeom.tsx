@@ -7,5 +7,6 @@ export default function PostCardSkeleton() {
 
       <Skeleton className="h-40 w-full rounded-md" />
     </div>
+
   )
 }
