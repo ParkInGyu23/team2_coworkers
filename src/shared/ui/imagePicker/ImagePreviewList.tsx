@@ -1,5 +1,5 @@
 import { ImageItem } from './ImagePicker';
-
+import { cn } from '@/shared/lib/cn';
 type Props = {
   images: ImageItem[];
   onRemove: (index: number) => void;
@@ -13,7 +13,7 @@ export function ImagePreviewList({ images, onRemove, className }: Props) {
         const src = image.type === 'url' ? image.url : URL.createObjectURL(image.file);
 
         return (
-          <div key={index} className={`relative h-[120px] w-[120px] ${className ?? ''}`}>
+          <div key={index} className={cn('relative h-[120px] w-[120px]', className)}>
             <img src={src} className="h-full w-full rounded object-cover" />
 
             <button

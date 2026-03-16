@@ -1,3 +1,4 @@
+import { cn } from '@/shared/lib/cn';
 type Props = {
   disabled: boolean;
   onUpload: (files: FileList) => void;
@@ -19,7 +20,10 @@ export function ImageUploadSlot({
 
   return (
     <label
-      className={`flex h-[120px] w-[120px] cursor-pointer flex-col items-center justify-center rounded-[10px] border ${className ?? ''}`}
+      className={cn(
+        'flex h-[120px] w-[120px] cursor-pointer flex-col items-center justify-center rounded-[10px] border',
+        className,
+      )}
     >
       <input
         type="file"
