@@ -1,54 +1,61 @@
-import { createContext, useContext, useState } from 'react';
-import { ImageUploadSlot } from './ImageUploadSlot';
-import { ImagePreviewList } from './ImagePreviewList';
+import { useState } from "react";
 
-type ContextType = {
-  images: File[];
-  max: number;
-  addImages: (files: FileList) => void;
-  removeImage: (index: number) => void;
-};
+export type ImageItem =
+  | { type: "url"; url: string }
+  | { type: "file"; file: File };
+
 type Props = {
-  max?: number;
+  maxCount?: number;
+  defaultImages?: string[];
   onChange?: (files: File[]) => void;
 };
 
-const ImagePickerContext = createContext<ContextType | null>(null);
+export function ImagePicker({
+  maxCount = 5,
+  defaultImages = [],
+  onChange,
+}: Props) {
+  const [images, setImages] = useState<ImageItem[]>(
+    defaultImages.map((url) => ({ type: "url", url }))
+  );
 
-export const useImagePicker = () => {
-  const context = useContext(ImagePickerContext);
-
-  if (!context) {
-    throw new Error('ImagePicker 내부에서만 사용 가능합니다');
-  }
-
-  return context;
-};
-export function ImagePicker({ max = 5, onChange }: Props) {
-  const [images, setImages] = useState<File[]>([]);
   const addImages = (files: FileList) => {
-    const newImage = Array.from(files);
+    const newImages: ImageItem[] = Array.from(files).map((file) => ({
+      type: "file",
+      file,
+    }));
+
     setImages((prev) => {
-      const combined = [...prev, ...newImage];
-       onChange?.(combined) 
-      return combined.slice(0, max);
+      const next = [...prev, ...newImages].slice(0, maxCount);
+
+      const newFiles = next
+        .filter((img) => img.type === "file")
+        .map((img) => img.file);
+
+      onChange?.(newFiles);
+
+      return next;
     });
   };
+
   const removeImage = (index: number) => {
-    setImages(prev => {
-      const next = prev.filter((_, i) => i !== index)
+    setImages((prev) => {
+      const next = prev.filter((_, i) => i !== index);
 
-      onChange?.(next)
+      const newFiles = next
+        .filter((img) => img.type === "file")
+        .map((img) => img.file);
 
-      return next
-    })
-  }
-  return (
-    <ImagePickerContext.Provider value={{ images, max, addImages, removeImage }}>
-      <div className="flex flex-wrap gap-2">
-        <ImagePreviewList />
-        <ImageUploadSlot />
-      </div>
-    </ImagePickerContext.Provider>
-  );
+      onChange?.(newFiles);
+
+      return next;
+    });
+  };
+
+  return {
+    images,
+    maxCount,
+    addImages,
+    removeImage,
+  };
 }
