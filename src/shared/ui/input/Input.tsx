@@ -74,6 +74,7 @@ export const Input = ({
           <button
             type="button"
             onClick={handleTogglePassword}
+            aria-pressed={showPassword} // 토글 상태 명시
             aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 표시'}
             className={cn(
               'text-icon-primary hover:text-interaction-pressed transition-colors focus:outline-none',
