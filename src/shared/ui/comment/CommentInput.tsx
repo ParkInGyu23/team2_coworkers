@@ -23,7 +23,7 @@ export default function CommentInput({
         disabled={disabled}
       />
       <button onClick={onSubmit} disabled={disabled || !value.trim()}>
-     <IconCommentBtn width={20} height={20} />
+     <IconCommentBtn  />
       </button>
     </div>
   );
