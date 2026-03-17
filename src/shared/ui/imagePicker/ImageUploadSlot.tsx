@@ -1,4 +1,5 @@
 import { cn } from '@/shared/lib/cn';
+import { IconImg } from '../icons/IconImg';
 type Props = {
   disabled: boolean;
   onUpload: (files: FileList) => void;
@@ -25,6 +26,7 @@ export function ImageUploadSlot({
         className,
       )}
     >
+      <IconImg/>
       <input
         type="file"
         multiple
@@ -38,7 +40,7 @@ export function ImageUploadSlot({
       />
 
       {isCount && (
-        <div>
+        <div className='pt-4'>
           {count}/{maxCount}
         </div>
       )}
