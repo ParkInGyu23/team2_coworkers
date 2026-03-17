@@ -7,13 +7,13 @@ export default function CommentSection() {
   const postComment = async (text: string) => {
     if (!text.trim()) return
 
-    // 👉 API 호출 자리
+
     console.log("댓글 등록:", text)
 
   }
 
   return (
-    <div>
+    <div className="w-[1000px] mx-auto  mt-15">
 
       <CommentInput
         value={comment}
