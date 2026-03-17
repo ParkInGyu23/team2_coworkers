@@ -10,7 +10,7 @@ type Props = {
   onChange?: (files: File[]) => void;
 };
 
-export function ImagePicker({
+export function useImagePicker({
   maxCount = 5,
   defaultImages = [],
   onChange,

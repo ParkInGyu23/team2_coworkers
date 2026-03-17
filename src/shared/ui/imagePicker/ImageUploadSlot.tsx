@@ -33,6 +33,7 @@ export function ImageUploadSlot({
         onChange={(e) => {
           if (!e.target.files) return;
           onUpload(e.target.files);
+          e.target.value = '';
         }}
       />
 
