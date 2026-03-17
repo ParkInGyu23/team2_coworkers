@@ -1,32 +1,3 @@
-/*import CommentInput from "@/shared/ui/comment/CommentInput"
-import React, { useState } from "react"
-
-export default function CommentSection() {
-  const [comment, setComment] = useState("")
-
-  const postComment = async (text: string) => {
-    if (!text.trim()) return
-
-    // 👉 API 호출 자리
-    console.log("댓글 등록:", text)
-
-  }
-
-  return (
-    <div>
-
-      <CommentInput
-        value={comment}
-        onChange={setComment}
-        onSubmit={() => {
-          postComment(comment)
-          setComment("")
-        }}
-      />
-    </div>
-  )
-}*/
-
 import { useImagePicker } from '@/shared/hooks/useImagePicker';
 import { ImagePreviewList } from '@/shared/ui/imagePicker/ImagePreviewList';
 import { ImageUploadSlot } from '@/shared/ui/imagePicker/ImageUploadSlot';
@@ -57,4 +28,5 @@ export default function Test() {
         className="h-[200px] w-[200px] rounded-xl bg-blue-50"
       />
     </div>
-  );}
+  );
+}
