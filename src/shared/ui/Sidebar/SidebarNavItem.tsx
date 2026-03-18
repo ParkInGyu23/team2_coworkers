@@ -1,5 +1,4 @@
-'use client';
-
+import Link from 'next/link';
 import { cn } from '@/shared/lib/cn';
 
 export interface SidebarNavItemProps {
@@ -42,13 +41,13 @@ export function SidebarNavItem({
 
   if (href != null) {
     return (
-      <a
+      <Link
         href={href}
         className={cn(baseClass, stateClass, isCollapsed && 'justify-center px-0 w-10 mx-auto', className)}
-        aria-current={isSelected ? 'page' : undefined}
+        aria-selected={isSelected}
       >
         {content}
-      </a>
+      </Link>
     );
   }
 
@@ -57,7 +56,7 @@ export function SidebarNavItem({
       type="button"
       onClick={onClick}
       className={cn(baseClass, stateClass, isCollapsed && 'justify-center px-0 w-10 mx-auto', className)}
-      aria-current={isSelected ? 'page' : undefined}
+      aria-selected={isSelected}
     >
       {content}
     </button>

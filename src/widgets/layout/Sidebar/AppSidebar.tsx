@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import {
   Sidebar,
@@ -10,12 +8,15 @@ import {
 } from '@/shared/ui/Sidebar';
 import { cn } from '@/shared/lib/cn';
 import { TeamIcon, BoardIcon, PlusIcon, ArrowDownIcon, FoldLeftIcon, FoldRightIcon, LogoIcon, CloseIcon } from './sidebar-icons';
-import { DEFAULT_TEAM_ITEMS, ROUTES } from './constants';
+import { ROUTES } from '@/shared/constants/routes';
+import { DEFAULT_TEAM_ITEMS } from './constants';
 import type { AppSidebarProps } from './types';
+import { getImageSrc } from '@/shared/lib/getImageSrc';
 import logoSm from '@/shared/assets/images/logo-sm.png';
-import profileIcon from '@/shared/assets/icons/profile.svg';
+import userIcon from '@/shared/assets/icons/user.svg';
 
-const profileImgSrc = typeof profileIcon === 'string' ? profileIcon : (profileIcon as { src?: string }).src ?? '';
+const defaultProfileImgSrc = getImageSrc(userIcon);
+const defaultProfileBgClass = 'rounded-xl bg-[#E2E8F0]';
 
 function DefaultFooter({
   isExpanded,
@@ -35,12 +36,9 @@ function DefaultFooter({
       <SidebarFooter className="py-4">
         <div className="flex items-center gap-3">
           {showProfileImage && (
-            <img
-              src={profileImgSrc}
-              alt=""
-              className="h-10 w-10 shrink-0 rounded-xl object-cover"
-              aria-hidden
-            />
+            <span className={cn('flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden', defaultProfileBgClass)} aria-hidden>
+              <img src={defaultProfileImgSrc} alt="" className="h-full w-full object-contain" />
+            </span>
           )}
           {mobileDrawer ? (
             <button
@@ -68,11 +66,9 @@ function DefaultFooter({
   return (
     <SidebarFooter>
       <div className="flex items-center gap-3">
-        <img
-          src={profileImgSrc}
-          alt="프로필"
-          className="h-10 w-10 shrink-0 rounded-xl object-cover"
-        />
+        <span className={cn('flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden', defaultProfileBgClass)}>
+          <img src={defaultProfileImgSrc} alt="프로필" className="h-full w-full object-contain" />
+        </span>
         {isExpanded && (
           <div className="min-w-0">
             <p className="text-sm font-medium text-txt-primary truncate">안해나</p>
@@ -115,7 +111,7 @@ export function AppSidebar({
           <SidebarHeader
             isExpanded={true}
             onToggle={onClose ?? (() => {})}
-            showToggleWhenCollapsed={true}
+            showToggle={true}
             toggleButton={<CloseIcon className="text-slate-300" />}
             logo={<span className="flex-1" />}
           />
@@ -123,7 +119,7 @@ export function AppSidebar({
           <SidebarHeader
             isExpanded={isExpanded}
             onToggle={handleToggle}
-            showToggleWhenCollapsed={false}
+            showToggle={isExpanded}
             toggleButton={isExpanded ? <FoldLeftIcon className="text-slate-300" /> : undefined}
             logo={
               isExpanded ? (

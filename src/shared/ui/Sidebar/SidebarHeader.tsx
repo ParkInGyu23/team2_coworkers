@@ -1,5 +1,3 @@
-'use client';
-
 import { cn } from '@/shared/lib/cn';
 
 export interface SidebarHeaderProps {
@@ -11,8 +9,8 @@ export interface SidebarHeaderProps {
   isExpanded: boolean;
   /** 토글 클릭 핸들러 */
   onToggle: () => void;
-  /** 접힌 상태에서 로고 옆 토글 버튼 표시 여부 (기본 true) */
-  showToggleWhenCollapsed?: boolean;
+  /** 헤더에 토글 버튼 표시 여부. 레이아웃/사이드바 조합에 따라 바깥에서 조건부로 넘깁니다. */
+  showToggle?: boolean;
   className?: string;
 }
 
@@ -44,10 +42,9 @@ export function SidebarHeader({
   toggleButton,
   isExpanded,
   onToggle,
-  showToggleWhenCollapsed = true,
+  showToggle = true,
   className,
 }: SidebarHeaderProps) {
-  const showToggle = isExpanded || showToggleWhenCollapsed;
 
   return (
     <header

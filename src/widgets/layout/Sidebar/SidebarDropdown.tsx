@@ -1,5 +1,3 @@
-'use client';
-
 import { cn } from '@/shared/lib/cn';
 import Dropdown from '@/shared/ui/dropdown';
 

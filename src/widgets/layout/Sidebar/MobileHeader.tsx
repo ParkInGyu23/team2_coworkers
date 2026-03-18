@@ -1,10 +1,10 @@
-'use client';
-
-import { LogoIcon, HamburgerIcon } from './sidebar-icons';
-import profileIcon from '@/shared/assets/icons/profile.svg';
+import { getImageSrc } from '@/shared/lib/getImageSrc';
 import { cn } from '@/shared/lib/cn';
+import { LogoIcon, HamburgerIcon } from './sidebar-icons';
+import userIcon from '@/shared/assets/icons/user.svg';
 
-const profileImgSrc = typeof profileIcon === 'string' ? profileIcon : (profileIcon as { src?: string }).src ?? '';
+const defaultProfileImgSrc = getImageSrc(userIcon);
+const defaultProfileBgClass = 'rounded-xl bg-[#E2E8F0]';
 
 interface MobileHeaderProps {
   onMenuClick: () => void;
@@ -36,8 +36,8 @@ export function MobileHeader({ onMenuClick, isLoggedIn = true, onLoginClick, cla
       </span>
       <div className="min-w-0 flex-1" aria-hidden />
       {isLoggedIn ? (
-        <span className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full overflow-hidden bg-background-tertiary" aria-hidden>
-          <img src={profileImgSrc} alt="" className="h-full w-full object-cover" />
+        <span className={cn('shrink-0 flex items-center justify-center w-9 h-9 overflow-hidden', defaultProfileBgClass)} aria-hidden>
+          <img src={defaultProfileImgSrc} alt="" className="h-full w-full object-contain" />
         </span>
       ) : (
         <button

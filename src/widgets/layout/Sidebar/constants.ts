@@ -1,14 +1,10 @@
 /**
  * 레이아웃(사이드바) 관련 상수.
- * 경로·기본 메뉴 등 하드코딩 방지를 위해 여기서만 선언.
+ * 기본 메뉴 등 하드코딩 방지를 위해 여기서만 선언.
+ * 경로는 @/shared/constants/routes 사용.
  */
 
 import type { TeamItem } from './types';
-
-/** 자유게시판 경로 */
-export const ROUTES = {
-  FREE_BOARD: '/',
-} as const;
 
 /** 사이드바 기본 팀 목록 (데이터 없을 때 fallback, 실제는 features/team 등에서 주입) */
 export const DEFAULT_TEAM_ITEMS: readonly TeamItem[] = [

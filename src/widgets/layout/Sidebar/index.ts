@@ -15,4 +15,5 @@ export {
   HamburgerIcon,
   CloseIcon,
 } from './sidebar-icons';
-export { DEFAULT_TEAM_ITEMS, ROUTES } from './constants';
+export { ROUTES } from '@/shared/constants/routes';
+export { DEFAULT_TEAM_ITEMS } from './constants';

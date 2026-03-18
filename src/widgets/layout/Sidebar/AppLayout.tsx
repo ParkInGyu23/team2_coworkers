@@ -1,6 +1,5 @@
-'use client';
-
 import { useState, useSyncExternalStore } from 'react';
+import { useScrollLock } from '@/shared/hooks/useScrollLock';
 import { cn } from '@/shared/lib/cn';
 import { AppSidebar } from './AppSidebar';
 import { MobileHeader } from './MobileHeader';
@@ -31,6 +30,8 @@ export interface AppLayoutProps {
 export function AppLayout({ children, sidebarProps, className }: AppLayoutProps) {
   const isMobile = useIsMobile();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useScrollLock(isMobile && isMobileMenuOpen);
 
   if (isMobile) {
     return (

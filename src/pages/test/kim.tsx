@@ -14,7 +14,7 @@ export default function TestPage() {
         selectedTeamId,
         onTeamSelect: setSelectedTeamId,
         onAddTeam: () => alert('팀 추가하기'),
-        isLoggedIn: false,
+        isLoggedIn: true,
       }}
     >
       <div className="p-6">
@@ -27,13 +27,8 @@ export default function TestPage() {
           <p className="text-sm text-txt-default">현재 선택 팀: <strong>{selectedTeamId ?? '-'}</strong></p>
 
           <Dropdown>
-            <Dropdown.Trigger>
-              <button
-                type="button"
-                className="rounded-lg border border-[var(--color-border-primary)] bg-background-primary px-4 py-2 text-sm font-medium text-txt-primary hover:bg-background-tertiary"
-              >
-                사이드바 스타일 드롭다운
-              </button>
+            <Dropdown.Trigger className="rounded-lg border border-[var(--color-border-primary)] bg-background-primary px-4 py-2 text-sm font-medium text-txt-primary hover:bg-background-tertiary">
+              사이드바 스타일 드롭다운
             </Dropdown.Trigger>
             <SidebarDropdownMenu align="left">
               <SidebarDropdownItem onClick={handleEdit}>수정</SidebarDropdownItem>
