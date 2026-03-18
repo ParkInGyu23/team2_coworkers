@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ImageItem } from '../../hooks/useImagePicker';
 import { cn } from '@/shared/lib/cn';
+import { IconClose } from '../icons';
 
 type Props = {
   images: ImageItem[];
@@ -36,7 +37,7 @@ export function ImagePreviewList({ images, onRemove, className }: Props) {
             onClick={() => onRemove(index)}
             className="absolute top-1 right-1 bg-black px-1 text-xs text-white"
           >
-            ✕
+            <IconClose size={16} />
           </button>
         </div>
       ))}
