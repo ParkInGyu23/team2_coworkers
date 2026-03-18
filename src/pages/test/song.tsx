@@ -60,6 +60,7 @@ export default function TestPage() {
             1. 할 일 모달용 (336 x 75)
           </label>
           <InputBox
+            id="todo-modal"
             className="h-18.75 w-full max-w-84"
             defaultValue="내용이 길어질 경우 스크롤이 생깁니다."
           />
@@ -70,6 +71,7 @@ export default function TestPage() {
             2. 자유게시판 본문용 (774 / 1920 반응형)
           </label>
           <InputBox
+            id="board-content"
             placeholder="내용을 입력해주세요."
             className="h-50 w-full max-w-82.5 min-[774px]:h-60 min-[774px]:max-w-135 min-[1920px]:max-w-190"
           />
