@@ -8,9 +8,9 @@ export const Toaster = () => {
       position="top-center"
       toastOptions={{
         classNames: {
-          toast: [
-            '!rounded-[16px] px-4 py-3 flex items-center gap-[10px] border-none shadow-lg h-[49px] text-[14px] md:h-[57px] md:text-[16px]',
-          ].join(' '),
+          toast:
+            '!rounded-[16px] px-4 py-3 flex items-center border-none shadow-lg h-[49px] text-[14px] md:h-[57px] md:text-[16px] flex !items-center gap-[10px]',
+
           title: '!text-white !font-medium !text-[14px] md:!text-[16px]',
           error: '!bg-status-danger',
           success: '!bg-brand-primary',
@@ -22,6 +22,6 @@ export const Toaster = () => {
         success: <IconCheck size={20} className="text-white" />,
         warning: <IconAlert size={22} className="text-white" />,
       }}
-    ></SonnerToaster>
+    />
   );
 };
