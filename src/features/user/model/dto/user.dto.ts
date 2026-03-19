@@ -1,6 +1,5 @@
 import type { RecurrenceType } from '@/features/task/model/types/recurrence.type';
 import type { Role } from '../types/role.type';
-import type { User } from '@/shared/types/user.model';
 
 export interface UserDto {
   id: number;
