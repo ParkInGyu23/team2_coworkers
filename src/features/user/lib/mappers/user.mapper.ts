@@ -5,24 +5,24 @@ import type {
   GetUserResponse,
 } from '../../model/dto/user.dto';
 import type {
-  User,
+  UserDetail,
   Membership,
   MembershipGroup,
   UserProfile,
 } from '../../model/entities/user.model';
 
 // 기본 유저 매퍼
-export const toUser = (dto: UserDto): User => ({
+export const toUserDetail = (dto: UserDto): UserDetail => ({
   id: dto.id,
-  teamId: dto.teamId,
   email: dto.email,
-  nickname: dto.nickname,
-  imageUrl: dto.image ?? undefined,
+  name: dto.nickname,
+  profileImage: dto.image,
+  teamId: dto.teamId,
   createdAt: dto.createdAt,
   updatedAt: dto.updatedAt,
 });
 
-// 그룹(소속)
+// 그룹
 export const toMembershipGroup = (dto: MembershipGroupDto): MembershipGroup => ({
   id: dto.id,
   teamId: dto.teamId,
@@ -38,13 +38,13 @@ export const toMembership = (dto: MembershipDto): Membership => ({
   groupId: dto.groupId,
   userName: dto.userName,
   userEmail: dto.userEmail,
-  userImageUrl: dto.userImage ?? undefined,
+  userProfileImage: dto.userImage ?? undefined,
   role: dto.role,
   group: toMembershipGroup(dto.group),
 });
 
-// 최종 프로필 응답
+// 최종 프로필
 export const toUserProfile = (dto: GetUserResponse): UserProfile => ({
-  ...toUser(dto), // 유저 기본 정보 복사
+  ...toUserDetail(dto),
   memberships: dto.memberships.map(toMembership),
 });
