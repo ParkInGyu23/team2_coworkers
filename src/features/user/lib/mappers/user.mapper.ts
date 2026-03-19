@@ -15,7 +15,7 @@ import type {
 export const toUserDetail = (dto: UserDto): UserDetail => ({
   id: dto.id,
   email: dto.email,
-  name: dto.nickname,
+  name: dto.nickname ?? '익명의 사용자',
   profileImage: dto.image,
   teamId: dto.teamId,
   createdAt: dto.createdAt,
@@ -36,7 +36,7 @@ export const toMembershipGroup = (dto: MembershipGroupDto): MembershipGroup => (
 export const toMembership = (dto: MembershipDto): Membership => ({
   userId: dto.userId,
   groupId: dto.groupId,
-  userName: dto.userName,
+  userName: dto.userName ?? '이름 없음',
   userEmail: dto.userEmail,
   userProfileImage: dto.userImage ?? undefined,
   role: dto.role,
