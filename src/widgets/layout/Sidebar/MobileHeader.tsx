@@ -1,10 +1,10 @@
-import { getImageSrc } from '@/shared/lib/getImageSrc';
 import { cn } from '@/shared/lib/cn';
 import { LogoIcon, HamburgerIcon } from './sidebar-icons';
+import { Profile } from '@/shared/ui/profile';
+import { getImageSrc } from '@/shared/lib/getImageSrc';
 import userIcon from '@/shared/assets/icons/user.svg';
 
 const defaultProfileImgSrc = getImageSrc(userIcon);
-const defaultProfileBgClass = 'rounded-xl bg-[#E2E8F0]';
 
 interface MobileHeaderProps {
   onMenuClick: () => void;
@@ -36,9 +36,7 @@ export function MobileHeader({ onMenuClick, isLoggedIn = true, onLoginClick, cla
       </span>
       <div className="min-w-0 flex-1" aria-hidden />
       {isLoggedIn ? (
-        <span className={cn('shrink-0 flex items-center justify-center w-9 h-9 overflow-hidden', defaultProfileBgClass)} aria-hidden>
-          <img src={defaultProfileImgSrc} alt="" className="h-full w-full object-contain" />
-        </span>
+        <Profile size="md" imageSrc={defaultProfileImgSrc} ariaLabel="프로필" className="bg-[#E2E8F0]" />
       ) : (
         <button
           type="button"

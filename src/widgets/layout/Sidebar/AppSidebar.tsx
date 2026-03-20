@@ -11,12 +11,12 @@ import { TeamIcon, BoardIcon, PlusIcon, ArrowDownIcon, FoldLeftIcon, FoldRightIc
 import { ROUTES } from '@/shared/constants/routes';
 import { DEFAULT_TEAM_ITEMS } from './constants';
 import type { AppSidebarProps } from './types';
-import { getImageSrc } from '@/shared/lib/getImageSrc';
+import { Profile, MemberChip } from '@/shared/ui/profile';
 import logoSm from '@/shared/assets/images/logo-sm.png';
+import { getImageSrc } from '@/shared/lib/getImageSrc';
 import userIcon from '@/shared/assets/icons/user.svg';
 
 const defaultProfileImgSrc = getImageSrc(userIcon);
-const defaultProfileBgClass = 'rounded-xl bg-[#E2E8F0]';
 
 function DefaultFooter({
   isExpanded,
@@ -36,9 +36,7 @@ function DefaultFooter({
       <SidebarFooter className="py-4">
         <div className="flex items-center gap-3">
           {showProfileImage && (
-            <span className={cn('flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden', defaultProfileBgClass)} aria-hidden>
-              <img src={defaultProfileImgSrc} alt="" className="h-full w-full object-contain" />
-            </span>
+            <Profile size="lg" imageSrc={defaultProfileImgSrc} ariaLabel="기본 프로필" className="bg-[#E2E8F0]" />
           )}
           {mobileDrawer ? (
             <button
@@ -65,17 +63,17 @@ function DefaultFooter({
 
   return (
     <SidebarFooter>
-      <div className="flex items-center gap-3">
-        <span className={cn('flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden', defaultProfileBgClass)}>
-          <img src={defaultProfileImgSrc} alt="프로필" className="h-full w-full object-contain" />
-        </span>
-        {isExpanded && (
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-txt-primary truncate">안해나</p>
-            <p className="text-xs text-txt-default truncate">경영관리팀</p>
-          </div>
-        )}
-      </div>
+      {isExpanded ? (
+        <MemberChip
+          imageSrc={defaultProfileImgSrc}
+          name="안해나"
+          description="경영관리팀"
+          size="lg"
+          avatarClassName="bg-[#E2E8F0]"
+        />
+      ) : (
+        <Profile size="lg" imageSrc={defaultProfileImgSrc} ariaLabel="프로필" className="bg-[#E2E8F0]" />
+      )}
     </SidebarFooter>
   );
 }
