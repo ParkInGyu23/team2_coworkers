@@ -1,12 +1,6 @@
 import type { User } from '@/shared/types/user.model';
 import type { Role } from '../types/role.type';
 
-export type UserDetail = User & {
-  teamId: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export interface MembershipGroup {
   id: number;
   teamId: string;
@@ -27,6 +21,6 @@ export interface Membership {
 }
 
 // [GET] /{teamId}/user 최종 형태
-export interface UserProfile extends UserDetail {
+export interface UserProfile extends User {
   memberships: Membership[];
 }

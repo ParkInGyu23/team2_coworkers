@@ -1,22 +1,19 @@
+import type { User } from '@/shared/types/user.model';
+import type { Membership, MembershipGroup, UserProfile } from '../../model/entities/user.model';
+
 import type {
   UserDto,
   MembershipDto,
   MembershipGroupDto,
   GetUserResponse,
 } from '../../model/dto/user.dto';
-import type {
-  UserDetail,
-  Membership,
-  MembershipGroup,
-  UserProfile,
-} from '../../model/entities/user.model';
 
 // 기본 유저 매퍼
-export const toUserDetail = (dto: UserDto): UserDetail => ({
+export const toUser = (dto: UserDto): User => ({
   id: dto.id,
   email: dto.email,
   name: dto.nickname ?? '익명의 사용자',
-  profileImage: dto.image,
+  profileImage: dto.image ?? undefined,
   teamId: dto.teamId,
   createdAt: dto.createdAt,
   updatedAt: dto.updatedAt,
@@ -45,6 +42,6 @@ export const toMembership = (dto: MembershipDto): Membership => ({
 
 // 최종 프로필
 export const toUserProfile = (dto: GetUserResponse): UserProfile => ({
-  ...toUserDetail(dto),
+  ...toUser(dto),
   memberships: dto.memberships.map(toMembership),
 });
