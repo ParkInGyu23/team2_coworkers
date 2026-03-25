@@ -3,6 +3,7 @@ export interface UserDTO {
   email: string;
   nickname: string;
   image: string | null;
+  teamId: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -26,3 +27,18 @@ export interface SignUpRequest {
 }
 
 export interface SignUpResponse extends UserDTO {}
+
+export interface SendResetPasswordEmailRequest {
+  email: string;
+  redirectUrl: string;
+}
+
+export interface ResetPasswordRequest {
+  password: string;
+  passwordConfirmation: string;
+  token: string;
+}
+
+export interface DefaultResponse {
+  message: string;
+}
