@@ -8,15 +8,25 @@ import { IconArrowRight } from '@/shared/ui/icons/IconArrowRight';
 import { IconPencil } from '@/shared/ui/icons/IconPencil';
 import { IconSearch } from '@/shared/ui/icons/IconSearch';
 import { useState } from 'react';
-
+import { useDebounce } from 'use-debounce';
 export default function BoardsListPage() {
-  const { data, isLoading, error } = useArticleListQuery();
-  const mappedList: Article[] = data?.list || [];
-
-  const [sortOption, setSortOption] = useState('최신순');
-
-  const best = useBestArticles(mappedList);
-
+  const {
+    data: allData,
+    isLoading,
+    error,
+  } = useArticleListQuery({
+    orderBy: 'recent',
+  });
+  const allList = allData?.list || [];
+  const best = useBestArticles(allList);
+  const [search, setSearch] = useState('');
+  const [sortOption, setSortOption] = useState<'recent' | 'like'>('recent');
+  const [debouncedSearch] = useDebounce(search, 300);
+  const { data: filteredData } = useArticleListQuery({
+    orderBy: sortOption,
+    keyword: debouncedSearch,
+  });
+  const filteredList = filteredData?.list || [];
   const handleUpCurrent = () => {
     if (best.current >= best.total - 1) return;
     best.setCurrent((prev) => prev + 1);
@@ -27,7 +37,16 @@ export default function BoardsListPage() {
     if (best.current <= 0) return;
     best.setCurrent((prev) => prev - 1);
   };
+  const [startX, setStartX] = useState<number | null>(null);
 
+  const handleMouseDown = (e: React.MouseEvent) => setStartX(e.clientX);
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (startX === null) return;
+    const diff = e.clientX - startX;
+    if (diff > 50) handleDownCurrent();
+    else if (diff < -50) handleUpCurrent();
+    setStartX(null);
+  };
   if (isLoading) return <div>로딩 중...</div>;
   if (error) return <div>데이터를 가져오는 중 오류 발생</div>;
 
@@ -41,13 +60,18 @@ export default function BoardsListPage() {
           <input
             placeholder="검색어를 입력해주세요"
             className="ml-3 w-full text-base outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </label>
       </header>
-      <section className="mt-8 h-92.5 rounded-xl border border-slate-100 bg-slate-100 px-2 pt-10">
+      <section
+        className="mt-8 h-92.5 rounded-xl border border-slate-100 bg-slate-100 px-2 pt-10"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
         <div className="mx-auto w-fit">
           <h2 className="text-xl font-bold">베스트 게시글</h2>
-
           <div className="flex justify-center gap-4 pt-6">
             {best.visibleBest.map((article) => (
               <div key={article.id}>
@@ -94,7 +118,7 @@ export default function BoardsListPage() {
       </section>
       <section className="mt-5 mb-8 flex justify-center">
         <div className="grid w-full max-w-[1074px] grid-cols-1 gap-3 lg:grid-cols-2">
-          {mappedList.map((article) => (
+          {filteredList.map((article) => (
             <div key={article.id}>
               <ArticleCard article={article} variant="default" />
             </div>
