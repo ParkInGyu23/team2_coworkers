@@ -14,7 +14,9 @@ export function useDeleteUserMutation() {
       queryClient.clear();
       queryClient.setQueryData(authKeys.me(), null);
 
-      localStorage.removeItem('accessToken');
+      document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = 'refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
       router.replace('/');
     },
   });
