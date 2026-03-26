@@ -19,11 +19,9 @@ export function PasswordChangeModal() {
     register,
     handleSubmit,
     reset,
-    watch, //필드값 실시간 감시
+    getValues,
     formState: { errors, isValid, isDirty },
   } = useForm<PasswordFormValues>({ mode: 'onChange' });
-
-  const newPasswordValue = watch('newPassword');
 
   const onSubmit = (data: PasswordFormValues) => {
     changePassword(
@@ -92,7 +90,7 @@ export function PasswordChangeModal() {
                   {...register('newPasswordCheck', {
                     required: '비밀번호 확인은 필수입니다.',
                     validate: (value) =>
-                      value === newPasswordValue || '비밀번호가 일치하지 않습니다.',
+                      value === getValues('newPassword') || '비밀번호가 일치하지 않습니다.',
                   })}
                 />
               </FormField.Control>

@@ -34,7 +34,7 @@ export function useAccountForm() {
     }
   }, [user, reset]);
 
-  //이탈 방지
+  //내부 이탈 방지
   useEffect(() => {
     const handleRouteChangeStart = (url: string) => {
       if (isDirty && url !== router.asPath) {
@@ -48,6 +48,22 @@ export function useAccountForm() {
     router.events.on('routeChangeStart', handleRouteChangeStart);
     return () => router.events.off('routeChangeStart', handleRouteChangeStart);
   }, [isDirty, router]);
+  // 브라우저 새로고침 및 탭 닫기 이탈 방지
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+
+    // 변경사항이 있을 때만
+    if (isDirty) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isDirty]);
 
   // 모달에서 저장 안 하고 이동
   const handleConfirmLeave = () => {

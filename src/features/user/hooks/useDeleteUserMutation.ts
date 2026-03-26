@@ -14,7 +14,8 @@ export function useDeleteUserMutation() {
       queryClient.clear();
       queryClient.setQueryData(authKeys.me(), null);
 
-      router.push('/');
+      localStorage.removeItem('accessToken');
+      router.replace('/');
     },
   });
 }

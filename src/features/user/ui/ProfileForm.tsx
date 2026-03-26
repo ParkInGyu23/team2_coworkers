@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 const UPLOAD_COOLDOWN_TIME = 1000;
 
 export function ProfileForm() {
+  const [isClient, setIsClient] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   // 중복 실행 막기위한 상태
   const [isUploading, setIsUploading] = useState(false);
@@ -20,6 +21,7 @@ export function ProfileForm() {
   const { data: user } = useUserQuery();
 
   useEffect(() => {
+    setIsClient(true);
     const mediaQuery = window.matchMedia('(max-width: 767px)');
     setIsMobile(mediaQuery.matches);
     const handleResize = (e: MediaQueryListEvent) => setIsMobile(e.matches);
@@ -40,12 +42,14 @@ export function ProfileForm() {
 
     if (!file) {
       updateProfile({ image: '' });
+      setIsUploading(false); // early 리턴 시 로딩 방지
       return;
     }
 
     // 이미지 용량 제한 검사 10mb
     if (file.size > 10 * 1024 * 1024) {
       toast.error('이미지 용량은 10MB를 초과할 수 없습니다.');
+      setIsUploading(false);
       return;
     }
 
@@ -65,6 +69,8 @@ export function ProfileForm() {
       },
     );
   };
+
+  if (!isClient) return null;
 
   return (
     <div className="mb-8 flex flex-col items-center justify-center">

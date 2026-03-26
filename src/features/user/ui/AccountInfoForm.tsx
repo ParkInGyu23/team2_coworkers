@@ -25,7 +25,7 @@ export function AccountInfoForm() {
   return (
     <>
       <div className={cn('flex flex-col gap-6', 'w-75', 'md:w-115', 'xl:w-198')}>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+        <form id="accountNameForm" onSubmit={handleSubmit(onSubmit)}>
           <FormField>
             <FormField.Label className="text-sm font-semibold">이름</FormField.Label>
             <FormField.Control>
@@ -36,11 +36,8 @@ export function AccountInfoForm() {
               />
             </FormField.Control>
           </FormField>
-
-          <div className="hidden">
-            <button type="submit" />
-          </div>
         </form>
+
         <FormField>
           <FormField.Label className="text-sm font-semibold">이메일</FormField.Label>
           <FormField.Control>
@@ -69,8 +66,8 @@ export function AccountInfoForm() {
         <div className="mt-4 flex w-full items-center justify-between">
           <AccountDeleteModal />
           <Button
-            type="button"
-            onClick={handleSubmit(onSubmit)}
+            form="accountNameForm"
+            type="submit"
             variant="primary"
             size="lg"
             className="px-6 whitespace-nowrap"
@@ -80,7 +77,6 @@ export function AccountInfoForm() {
           </Button>
         </div>
       </div>
-
       <UnsavedChangesModal
         isOpen={isModalOpen}
         onClose={closeModal}
