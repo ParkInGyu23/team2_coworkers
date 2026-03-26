@@ -17,3 +17,19 @@ export interface ArticleList {
   totalCount: number;
   list: Article[];
 }
+
+export type ArticleDetail = {
+  id: number;
+  title: string;
+  content: string;
+  image?: string;
+  likeCount: number;
+  commentCount: number;
+  isLiked: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  writer: {
+    id: number;
+    nickname: string;
+  };
+};
