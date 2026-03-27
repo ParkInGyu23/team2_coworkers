@@ -24,16 +24,6 @@ export function useCreateComment() {
 
           toast.success('댓글이 등록되었습니다.');
         },
-
-        onError: (error: any) => {
-          const status = error?.response?.status;
-
-          if (status === 404) {
-            toast.error('게시글을 찾을 수 없습니다.');
-          } else {
-            toast.error('댓글 작성 중 오류가 발생했습니다.');
-          }
-        },
       },
     );
   };

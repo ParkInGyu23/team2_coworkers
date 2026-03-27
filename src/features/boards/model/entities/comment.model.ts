@@ -9,3 +9,7 @@ export type Comment = {
     image: string;
   };
 };
+export type CommentList = {
+  nextCursor: number | null;
+  list: Comment[];
+};
