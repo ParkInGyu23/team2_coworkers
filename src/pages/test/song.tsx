@@ -37,6 +37,7 @@ export default function HistoryPage() {
           <section className="flex flex-col gap-10">
             <DateGroup dateHeader="2026년 3월 9일 (월)">
               <HistoryTaskItem
+                id={1}
                 name="test2"
                 date={new Date('2026-03-09T00:00:00.000Z')}
                 frequency="DAILY"
@@ -46,12 +47,14 @@ export default function HistoryPage() {
 
             <DateGroup dateHeader="2026년 3월 7일 (토)">
               <HistoryTaskItem
+                id={2}
                 name="가구 사기"
                 date={new Date('2026-03-07T00:00:00.000Z')}
                 frequency="DAILY"
                 commentCount={2}
               />
               <HistoryTaskItem
+                id={3}
                 name="테스트임다"
                 date={new Date('2026-03-07T00:00:00.000Z')}
                 frequency="DAILY"
@@ -61,6 +64,7 @@ export default function HistoryPage() {
 
             <DateGroup dateHeader="2026년 3월 9일 (토)">
               <HistoryTaskItem
+                id={4}
                 name="댓글이 없을시에는 comment 없음"
                 date={new Date('2026-03-07T00:00:00.000Z')}
                 frequency="DAILY"
