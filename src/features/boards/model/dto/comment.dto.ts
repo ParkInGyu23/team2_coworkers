@@ -12,15 +12,5 @@ export type CommentDto = {
 
 export type CommentListDto = {
   nextCursor: number | null;
-  list: {
-    id: number;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-    writer: {
-      id: number;
-      nickname: string;
-      image: string;
-    };
-  }[];
+  list: CommentDto[];
 };

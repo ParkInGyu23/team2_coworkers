@@ -18,18 +18,6 @@ export interface ArticleList {
   list: Article[];
 }
 
-export type ArticleDetail = {
-  id: number;
-  title: string;
-  content: string;
-  image?: string;
-  likeCount: number;
-  commentCount: number;
+export interface ArticleDetail extends Article {
   isLiked: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  writer: {
-    id: number;
-    nickname: string;
-  };
-};
+}

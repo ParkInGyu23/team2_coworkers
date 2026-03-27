@@ -19,6 +19,6 @@ export async function getComments(params: GetCommentsParams): Promise<CommentLis
       },
     },
   );
-
+  
   return toCommentList(data);
 }

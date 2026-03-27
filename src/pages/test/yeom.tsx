@@ -8,8 +8,7 @@ import { useUpdateComment } from '@/features/boards/hooks/useUpdateComment';
 import { useState } from 'react';
 
 export default function TestPage() {
-  const articleId = 2457; // 테스트용
-
+  const articleId = 2460; // 테스트용
   const [content, setContent] = useState('');
 
   // ✅ 게시글
@@ -17,13 +16,20 @@ export default function TestPage() {
   const { deleteArticle } = useDeleteArticle();
   const { toggleLike } = useToggleLikeArticle();
 
-  // ✅ 댓글
-  const { data: comments, refetch: refetchComments } = useCommentList(articleId);
+  // ✅ 댓글 (useInfiniteQuery)
+  const {
+    data: commentsData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useCommentList(articleId);
+
+  const comments = commentsData?.pages.flatMap(page => page.list) ?? [];
+
   const { createComment } = useCreateComment();
   const { updateComment } = useUpdateComment(articleId);
   const { deleteComment } = useDeleteComment(articleId);
 
-  
   return (
     <div style={{ padding: 20 }}>
       <h1>🔥 API 통합 테스트</h1>
@@ -43,7 +49,7 @@ export default function TestPage() {
           </div>
 
           <div style={{ marginTop: 10 }}>
-            <button onClick={() => toggleLike(articleId ,article.isLiked)}>👍 좋아요 토글</button>
+            <button onClick={() => toggleLike(articleId, article.isLiked)}>👍 좋아요 토글</button>
 
             <button onClick={() => deleteArticle(articleId)} style={{ marginLeft: 10 }}>
               🗑 게시글 삭제
@@ -74,13 +80,9 @@ export default function TestPage() {
         </button>
       </div>
 
-      <button onClick={() => refetchComments()} style={{ marginTop: 10 }}>
-        댓글 새로고침
-      </button>
-
       {/* 리스트 */}
       <ul>
-        {comments?.list?.map((comment) => (
+        {comments.map((comment) => (
           <li key={comment.id} style={{ marginBottom: 10 }}>
             <b>{comment.writer.nickname}</b>
             <div>{comment.content}</div>
@@ -95,6 +97,12 @@ export default function TestPage() {
           </li>
         ))}
       </ul>
+      {/* 무한 로딩 버튼 */}
+      {hasNextPage && (
+        <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+          {isFetchingNextPage ? '불러오는 중...' : '더보기'}
+        </button>
+      )}
     </div>
   );
 }

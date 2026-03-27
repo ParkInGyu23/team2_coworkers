@@ -12,10 +12,6 @@ export function toComment(dto: CommentDto): Comment {
 export function toCommentList(dto: CommentListDto): CommentList {
   return {
     nextCursor: dto.nextCursor,
-    list: dto.list.map((c) => ({
-      ...c,
-      createdAt: new Date(c.createdAt),
-      updatedAt: new Date(c.updatedAt),
-    })),
+    list: dto.list.map(toComment),
   };
 }
