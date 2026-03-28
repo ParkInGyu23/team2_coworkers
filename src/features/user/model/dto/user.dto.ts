@@ -53,11 +53,11 @@ export interface UpdatePasswordRequest {
 export interface UserTaskHistoryDto {
   id: number;
   name: string;
-  description: string | null;
+  description: string;
   date: string;
-  doneAt: string | null;
+  doneAt: string;
   updatedAt: string;
-  deletedAt: string | null;
+  deletedAt: string;
   frequency: RecurrenceType;
   recurringId: number;
   displayIndex: number;

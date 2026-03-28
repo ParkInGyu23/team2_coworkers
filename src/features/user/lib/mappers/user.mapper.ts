@@ -1,5 +1,10 @@
 import type { User } from '@/shared/types/user.model';
-import type { Membership, MembershipGroup, UserProfile } from '../../model/entities/user.model';
+import type {
+  Membership,
+  MembershipGroup,
+  UserProfile,
+  UserTaskHistory,
+} from '../../model/entities/user.model';
 
 import type {
   UserDto,
@@ -45,3 +50,13 @@ export const toUserProfile = (dto: GetUserResponse): UserProfile => ({
   ...toUser(dto),
   memberships: dto.memberships.map(toMembership),
 });
+
+export const toUserTaskHistory = (dto: UserTaskHistoryDto): UserTaskHistory => {
+  return {
+    ...dto,
+    date: new Date(dto.date),
+    doneAt: new Date(dto.doneAt),
+    updatedAt: new Date(dto.updatedAt),
+    deletedAt: new Date(dto.deletedAt),
+  };
+};
