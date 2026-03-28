@@ -5,6 +5,8 @@ import { Input } from '@/shared/ui/input/Input';
 import KebabMenu from '@/features/boards/components/KebabMenu';
 import { Article } from '../model/entities/article.model';
 import { Comment } from '../model/entities/comment.model';
+import { useUserQuery } from '@/features/user';
+import { formatDate } from '@/shared/lib/date';
 
 interface Props {
   article: Article;
@@ -12,6 +14,7 @@ interface Props {
 }
 
 export default function CommentSection({ article, comments }: Props) {
+  const { data: currentUser } = useUserQuery();
   return (
     <div className="mt-8">
       <div className="flex justify-between">
@@ -47,18 +50,17 @@ export default function CommentSection({ article, comments }: Props) {
               <div className="border-t border-slate-200 pt-3">
                 <div className="flex justify-between">
                   <div className="text-sm font-bold">{c.writer.nickname}</div>
-
-                  <KebabMenu
-                    onEdit={() => console.log('댓글 수정', c.id)}
-                    onDelete={() => console.log('댓글 삭제', c.id)}
-                  />
+                  {currentUser?.id === c.writer.id && (
+                    <KebabMenu
+                      onEdit={() => console.log('댓글 수정', c.id)}
+                      onDelete={() => console.log('댓글 삭제', c.id)}
+                    />
+                  )}
                 </div>
 
                 <div className="text-sm">{c.content}</div>
 
-                <div className="mt-1 text-sm text-slate-400">
-                  {c.createdAt.toLocaleDateString()}
-                </div>
+                <div className="mt-1 text-sm text-slate-400">{formatDate(c.createdAt)}</div>
               </div>
             </div>
           </div>
