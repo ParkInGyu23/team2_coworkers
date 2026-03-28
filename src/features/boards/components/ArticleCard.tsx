@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Article } from '../model/entities/article.model';
 import { IconHeartEmpty } from '@/shared/ui/icons/IconHeartEmpty';
 import { IconBest } from '@/shared/ui/icons/IconBest';
+import Link from 'next/link';
 interface Props {
   article: Article;
   variant?: 'default' | 'best';
@@ -13,7 +14,7 @@ export function ArticleCard({ article, variant }: Props) {
   const isBest = variant === 'best';
 
   return (
-    <article
+   <Link href={`/boards/${article.id}`}
       className={
         isBest
           ? 'h-51.25 w-85 rounded-xl border border-slate-200 bg-white px-5 py-6'
@@ -70,6 +71,6 @@ export function ArticleCard({ article, variant }: Props) {
           <span className="text-sm text-gray-400">{article.likeCount}</span>
         </div>
       </footer>
-    </article>
+    </Link>
   );
 }
