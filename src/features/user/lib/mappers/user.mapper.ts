@@ -11,6 +11,7 @@ import type {
   MembershipDto,
   MembershipGroupDto,
   GetUserResponse,
+  UserTaskHistoryDto,
 } from '../../model/dto/user.dto';
 
 // 기본 유저 매퍼
@@ -54,9 +55,10 @@ export const toUserProfile = (dto: GetUserResponse): UserProfile => ({
 export const toUserTaskHistory = (dto: UserTaskHistoryDto): UserTaskHistory => {
   return {
     ...dto,
+    description: dto.description ?? '',
     date: new Date(dto.date),
-    doneAt: new Date(dto.doneAt),
+    doneAt: dto.doneAt ? new Date(dto.doneAt) : null,
     updatedAt: new Date(dto.updatedAt),
-    deletedAt: new Date(dto.deletedAt),
+    deletedAt: dto.deletedAt ? new Date(dto.deletedAt) : null,
   };
 };

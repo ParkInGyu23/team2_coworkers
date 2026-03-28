@@ -1,7 +1,7 @@
-import httpClient from '@/shared/api/httpClient';
+import { clientFetcher } from '@/shared/lib/axios/client-fetcher';
 import { GetUserHistoryResponse } from '../model/dto/user.dto';
 
 export const getUserHistory = async (): Promise<GetUserHistoryResponse> => {
-  const response = await httpClient.get<GetUserHistoryResponse>(`/user/history`);
-  return response.data;
+  const { data } = await clientFetcher.get<GetUserHistoryResponse>(`/user/history`);
+  return data;
 };

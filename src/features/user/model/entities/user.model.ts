@@ -36,7 +36,7 @@ export interface UserTaskHistory {
   userId: number;
   writerId: number;
   date: Date;
-  doneAt: Date;
+  doneAt: Date | null;
   updatedAt: Date;
-  deletedAt: Date;
+  deletedAt: Date | null;
 }

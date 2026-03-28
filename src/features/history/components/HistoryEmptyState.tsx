@@ -15,10 +15,10 @@ export const HistoryEmptyState = () => {
         />
       </div>
 
-      <p className="mb-2 text-center text-lg font-medium text-[#94A3B8]">
+      <p className="text-interaction-inactive mb-2 text-center text-lg font-medium">
         아직 완료된 작업이 없어요.
       </p>
-      <p className="text-center text-base font-medium text-[#94A3B8]">
+      <p className="text-interaction-inactive text-center text-base font-medium">
         하나씩 완료해가며 히스토리를 만들어보세요!
       </p>
     </div>
