@@ -3,6 +3,7 @@ import { Article } from '../model/entities/article.model';
 import { IconHeartEmpty } from '@/shared/ui/icons/IconHeartEmpty';
 import { IconBest } from '@/shared/ui/icons/IconBest';
 import Link from 'next/link';
+import { formatDate } from '@/shared/lib/date';
 interface Props {
   article: Article;
   variant?: 'default' | 'best';
@@ -63,7 +64,7 @@ export function ArticleCard({ article, variant }: Props) {
         <div className="flex gap-2 text-sm font-medium">
           <span>{article.writer.nickname}</span>
           <span>|</span>
-          <time className="text-gray-400"> {article.createdAt.toLocaleDateString()}</time>
+          <time className="text-gray-400">{formatDate(article.createdAt)}</time>
         </div>
 
         <div className="flex items-center gap-1">
