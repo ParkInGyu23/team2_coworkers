@@ -15,9 +15,15 @@ export function useHistoryBoardData(
     if (!historyList || historyList.length === 0) {
       return { sliderData: newSliderData, displayData: nestedGroupedData };
     }
+    // 최신 날짜순으로 정렬
+    const sortedList = [...historyList].sort((a, b) => {
+      const dateA = new Date(a.doneAt || a.date).getTime();
+      const dateB = new Date(b.doneAt || b.date).getTime();
+      return dateB - dateA; // 내림차순
+    });
 
     // 카테고리 데이터와 날짜,이름별 그룹 생성
-    historyList.forEach((task) => {
+    sortedList.forEach((task) => {
       newSliderData[task.name] = (newSliderData[task.name] || 0) + 1;
 
       const dateHeader = formatDateWithDay(task.date);

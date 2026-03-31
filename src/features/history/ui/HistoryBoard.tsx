@@ -54,10 +54,6 @@ export function HistoryBoard() {
 
   if (!isClient) return null;
 
-  if (isHistoryLoading) {
-    return <div className="py-20 text-center">데이터를 불러오는 중입니다...</div>;
-  }
-
   return (
     <div
       className={cn(
@@ -77,8 +73,11 @@ export function HistoryBoard() {
           onToggleViewAll={handleViewAllForMonth}
         />
       </div>
-
-      {isEmpty ? (
+      {isHistoryLoading ? (
+        <div className="text-txt-secondary flex flex-1 items-center justify-center py-20">
+          데이터를 불러오는 중입니다...
+        </div>
+      ) : isEmpty ? (
         <div className="mt-12 flex-1">
           <HistoryEmptyState />
         </div>
