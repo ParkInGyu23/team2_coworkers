@@ -9,6 +9,7 @@ export default function EditArticle() {
   const id = typeof articleId === 'string' ? Number(articleId) : NaN;
 
   const { data: article } = useArticleDetailQuery(id);
+  if (!article) return null;
   const initialImages = article?.image ? [{ type: 'url' as const, url: article.image }] : [];
   return (
     <div>
