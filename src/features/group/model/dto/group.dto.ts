@@ -6,6 +6,8 @@ export interface GroupDto {
   image: string | null;
   createdAt: string;
   updatedAt: string;
+  /** [GET] /groups/{id} 상세에 포함 */
+  teamId?: string;
 }
 
 export interface GroupMemberDto {
@@ -37,12 +39,6 @@ export interface PostGroupResponse extends GroupDto {}
 export interface PatchGroupRequest {
   name?: string;
   image?: string | null;
-}
-
-// [POST] /{teamId}/groups/accept-invitation 팀 초대
-export interface AcceptInvitationRequest {
-  userEmail: string;
-  token: string;
 }
 
 // [POST] /{teamId}/groups/{id}/member

@@ -3,30 +3,36 @@ import { FormField } from '@/shared/ui/formfield';
 import { Button } from '@/shared/ui/Button';
 import RecurrenceField from '../../components/recurrenceField';
 import { Controller, useForm } from 'react-hook-form';
-import { INITIAL_TASK_FORM_VALUES, TaskFormValues } from './taskForm.types';
+import { TaskFormValues } from './taskForm.types';
 import DateTimeField from '../../dateTimeField/dateTimeField';
+import { InputBox } from '@/shared/ui/input/InputBox';
 
 type Props = {
+  initialValues: TaskFormValues;
   onSubmit: (data: TaskFormValues) => void;
   isPending: boolean;
 };
 
-export default function TaskForm({ onSubmit, isPending }: Props) {
+export default function TaskForm({ initialValues, onSubmit, isPending }: Props) {
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isValid },
-  } = useForm<TaskFormValues>({ mode: 'onChange', defaultValues: INITIAL_TASK_FORM_VALUES });
+  } = useForm<TaskFormValues>({ mode: 'onChange', defaultValues: initialValues });
 
   const submitHandler = (data: TaskFormValues) => {
     onSubmit(data);
   };
 
+  const isEditMode = Boolean(initialValues?.title);
+
   return (
-    <div className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit(submitHandler)} className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 text-center">
-        <h2 className="text-txt-primary text-lg">할 일 만들기</h2>
+        <h2 className="text-txt-primary text-lg">
+          {isEditMode ? '할 일 수정하기' : '할 일 만들기'}
+        </h2>
         <p className="text-md text-txt-default">
           할 일은 실제로 행동 가능한 작업 중심으로
           <br />
@@ -104,13 +110,14 @@ export default function TaskForm({ onSubmit, isPending }: Props) {
       <FormField>
         <FormField.Label>할 일 메모</FormField.Label>
         <FormField.Control>
-          <Input {...register('description')} />
+          <InputBox {...register('description')} />
         </FormField.Control>
       </FormField>
 
-      <Button onClick={handleSubmit(submitHandler)} disabled={!isValid || isPending}>
-        {isPending ? '생성 중..' : '만들기'}
+      <Button type="submit" disabled={!isValid || isPending}>
+        {isPending && <span className="loading loading-spinner" />}
+        {isEditMode ? '수정하기' : '만들기'}
       </Button>
-    </div>
+    </form>
   );
 }
