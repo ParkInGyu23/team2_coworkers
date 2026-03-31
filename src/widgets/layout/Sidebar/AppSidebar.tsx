@@ -10,12 +10,12 @@ import {
 import { cn } from '@/shared/lib/cn';
 import { TeamIcon, BoardIcon, PlusIcon, ArrowDownIcon, FoldLeftIcon, FoldRightIcon, LogoIcon, CloseIcon } from './sidebar-icons';
 import { ROUTES } from '@/shared/constants/routes';
-import { DEFAULT_TEAM_ITEMS } from './constants';
 import type { AppSidebarProps } from './types';
 import { getImageSrc } from '@/shared/lib/getImageSrc';
 import logoLg from '@/shared/assets/images/logo-lg.png';
 import userIcon from '@/shared/assets/icons/user.svg';
 import { MemberChip, Profile } from '@/shared/ui/profile';
+import { useSidebarTeamItems } from './useSidebarTeamItems';
 
 const defaultProfileImgSrc = getImageSrc(userIcon);
 const defaultProfileBgClass = 'rounded-xl bg-[#E2E8F0]';
@@ -86,7 +86,6 @@ function DefaultFooter({
 export function AppSidebar({
   selectedTeamId = null,
   onTeamSelect,
-  onAddTeam,
   footer,
   teams,
   isLoggedIn = false,
@@ -96,14 +95,14 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isTeamListOpen, setIsTeamListOpen] = useState(true);
+  const teamItems = useSidebarTeamItems({ teams, isLoggedIn });
+
   const handleToggle = () => setIsExpanded((v) => !v);
   const handleTeamListToggle = () => setIsTeamListOpen((v) => !v);
-
-  const teamItems = teams ?? [...DEFAULT_TEAM_ITEMS];
   const expanded = mobileDrawer ? true : isExpanded;
 
   return (
-    <div className={cn('relative shrink-0 overflow-visible', mobileDrawer && 'h-full')}>
+    <div className="relative h-full shrink-0 overflow-visible">
       <Sidebar
         isExpanded={expanded}
         onToggle={mobileDrawer ? () => {} : handleToggle}
@@ -192,8 +191,8 @@ export function AppSidebar({
                   ))}
                   <SidebarNavItem
                     label="팀 추가하기"
+                    href={ROUTES.TEAM_CREATE}
                     isExpanded={expanded}
-                    onClick={() => onAddTeam?.()}
                     icon={<PlusIcon />}
                     className={cn(
                       expanded &&
