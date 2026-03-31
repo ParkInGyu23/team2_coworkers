@@ -1,6 +1,5 @@
 import { Button } from '@/shared/ui/Button';
 import { FormField } from '@/shared/ui/formfield/index';
-
 import { ImagePreviewList } from '@/shared/ui/imagePicker/ImagePreviewList';
 import { ImageUploadSlot } from '@/shared/ui/imagePicker/ImageUploadSlot';
 import Link from 'next/link';
@@ -42,7 +41,9 @@ export function ArticleForm({
   const handleRemove = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
     onSubmit({ title, content, images });
   };
   return (
