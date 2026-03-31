@@ -11,7 +11,7 @@ export default function EditArticle() {
   const { data: article } = useArticleDetailQuery(id);
   const initialImages = article?.image ? [{ type: 'url' as const, url: article.image }] : [];
   return (
-    <div className="container">
+    <div>
       <ArticleForm
         initialTitle={article?.title}
         initialContent={article?.content}
