@@ -9,6 +9,9 @@ import { useTeamDashboardMemberActions } from './useTeamDashboardMemberActions';
 import { useTeamDashboardTaskListActions } from './useTeamDashboardTaskListActions';
 import { TeamDashboardInviteModal } from './TeamDashboardInviteModal';
 import { TeamDashboardRemoveMemberModal } from './TeamDashboardRemoveMemberModal';
+import { TeamDashboardDeleteTeamModal } from './TeamDashboardDeleteTeamModal';
+import { TeamDashboardLeaveTeamModal } from './TeamDashboardLeaveTeamModal';
+import { useTeamDashboardGroupActions } from './useTeamDashboardGroupActions';
 import { toTaskBoard } from './taskBoardAdapter';
 
 type ReadyVm = Extract<TeamDashboardViewModel, { phase: 'ready' }>;
@@ -39,6 +42,21 @@ export function TeamDashboardReadyView({ vm }: Props) {
   const myMembership = group.members.find((member) => member.userId === me?.id);
   const canManageMembers = myMembership?.role === 'ADMIN';
 
+  const {
+    deleteModal,
+    leaveModal,
+    isDeleting,
+    isLeaving,
+    handleEditTeam,
+    handleOpenDeleteTeam,
+    handleOpenLeaveTeam,
+    handleConfirmDeleteTeam,
+    handleConfirmLeaveTeam,
+  } = useTeamDashboardGroupActions({
+    groupId: group.id,
+    currentUserId: me?.id,
+  });
+
   return (
     <>
       <Head>
@@ -59,7 +77,6 @@ export function TeamDashboardReadyView({ vm }: Props) {
             aria-hidden
           />
         ) : null}
-        {/* TODO: 팀 수정/삭제 — 모달 + useUpdateGroupMutation / useDeleteGroupMutation. 에러 토스트는 각 뮤테이션 onError에서만 처리. */}
         <TeamCard
           teamName={group.name}
           progressPercent={TEAM_CARD_PLACEHOLDER_STATS.progressPercent}
@@ -69,6 +86,10 @@ export function TeamDashboardReadyView({ vm }: Props) {
           members={memberCardItems}
           memberCount={group.members.length}
           className="w-full max-w-full"
+          teamMenuMode={canManageMembers ? 'admin' : 'member'}
+          onEditTeam={handleEditTeam}
+          onDeleteTeam={handleOpenDeleteTeam}
+          onLeaveTeam={handleOpenLeaveTeam}
         />
 
         <section className="flex min-w-0 flex-col gap-4" aria-labelledby="team-task-board-heading">
@@ -112,6 +133,24 @@ export function TeamDashboardReadyView({ vm }: Props) {
         memberToRemove={memberToRemove}
         isRemovingMember={isRemovingMember}
         onConfirmRemoveMember={handleConfirmRemoveMember}
+      />
+
+      <TeamDashboardDeleteTeamModal
+        isOpen={deleteModal.isOpen}
+        open={deleteModal.open}
+        close={deleteModal.close}
+        teamName={group.name}
+        isDeleting={isDeleting}
+        onConfirm={handleConfirmDeleteTeam}
+      />
+
+      <TeamDashboardLeaveTeamModal
+        isOpen={leaveModal.isOpen}
+        open={leaveModal.open}
+        close={leaveModal.close}
+        teamName={group.name}
+        isLeaving={isLeaving}
+        onConfirm={handleConfirmLeaveTeam}
       />
     </>
   );

@@ -8,3 +8,8 @@ export const ROUTES = {
 export function teamDashboardPath(groupId: string) {
   return `/${encodeURIComponent(groupId)}`;
 }
+
+/** 팀 이름 수정 `/{groupId}/edit` */
+export function teamEditPath(groupId: string) {
+  return `/${encodeURIComponent(groupId)}/edit`;
+}
