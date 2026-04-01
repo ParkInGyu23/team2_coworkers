@@ -1,6 +1,7 @@
 import { useUserQuery } from '@/features/user/hooks/useUserQuery';
 import { cn } from '@/shared/lib/cn';
 import decorationImg from '@/shared/assets/images/decoration.png';
+import { IconArrowRight } from '@/shared/ui/icons/IconArrowRight';
 
 interface TeamHeaderProps {
   selectedCategory: string | null;
@@ -8,9 +9,13 @@ interface TeamHeaderProps {
 }
 
 export function TeamHeader({ selectedCategory, onResetCategory }: TeamHeaderProps) {
-  const { data: user } = useUserQuery();
+  const { data: user, isLoading } = useUserQuery();
   const hasTeam = user?.memberships && user.memberships.length > 0;
-  const teamName = hasTeam ? user.memberships[0].group.name : '참여 중인 팀이 없습니다';
+  const teamName = isLoading
+    ? '정보를 불러오는 중...'
+    : hasTeam
+      ? user.memberships[0].group.name
+      : '참여 중인 팀이 없습니다';
 
   return (
     <header
@@ -24,8 +29,8 @@ export function TeamHeader({ selectedCategory, onResetCategory }: TeamHeaderProp
     >
       <section className="relative z-10 flex min-w-0 items-center gap-2 text-[16px] font-bold md:text-[24px]">
         <button
-          type="button"
-          onClick={() => hasTeam && onResetCategory()}
+          onClick={onResetCategory}
+          disabled={!hasTeam || isLoading}
           className={cn(
             'truncate text-[16px] font-bold transition-colors md:text-[20px]',
             hasTeam
@@ -38,7 +43,9 @@ export function TeamHeader({ selectedCategory, onResetCategory }: TeamHeaderProp
 
         {selectedCategory && (
           <>
-            <span className="text-txt-tertiary text-[16px] font-bold md:text-[20px]">{'>'}</span>
+            <span className="text-txt-tertiary text-[16px] font-bold md:text-[20px]">
+              <IconArrowRight className="h-4 w-4 md:h-6 md:w-6" />
+            </span>
             <span className="text-txt-primary truncate text-[16px] font-bold md:text-[20px]">
               {selectedCategory}
             </span>
