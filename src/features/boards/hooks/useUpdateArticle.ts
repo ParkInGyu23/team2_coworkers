@@ -23,8 +23,9 @@ export function useUpdateArticle() {
         onSuccess: async (data) => {
           queryClient.setQueryData(ARTICLE_QUERY_KEYS.detail(articleId), data);
           queryClient.invalidateQueries({
-            queryKey: ARTICLE_QUERY_KEYS.list(),
+            queryKey: ['articles', 'list'],
           });
+
           await router.replace(`/boards/${articleId}`);
           toast.success('게시글이 수정되었습니다.');
         },

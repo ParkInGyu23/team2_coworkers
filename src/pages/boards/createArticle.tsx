@@ -1,6 +1,7 @@
-import { uploadImage } from '@/features/boards/api/uploadImage';
 import { ArticleForm } from '@/features/boards/components/ArticleForm';
 import { useCreateArticle } from '@/features/boards/hooks/useCreateArticle';
+import { handleImages } from '@/features/boards/utils/handleImages';
+import { uploadImage } from '@/features/user';
 
 export default function CreateArticle() {
   const { createArticle } = useCreateArticle();
@@ -9,17 +10,14 @@ export default function CreateArticle() {
     <div>
       <ArticleForm
         onSubmit={async ({ title, content, images }) => {
-          const files = images.filter((img) => img.type === 'file').map((img) => img.file);
+          try {
+            const allImages = await handleImages(images);
+            const image = allImages[0];
 
-          const urls = images.filter((img) => img.type === 'url').map((img) => img.url);
-
-          const uploadedUrls = await Promise.all(files.map((file) => uploadImage(file)));
-
-          const allImages = [...urls, ...uploadedUrls];
-
-          const image = allImages[0];
-
-          createArticle(title, content, image);
+            await createArticle(title, content, image);
+          } catch (error) {
+            alert('게시글 생성 중 오류가 발생했습니다.');
+          }
         }}
       />
     </div>

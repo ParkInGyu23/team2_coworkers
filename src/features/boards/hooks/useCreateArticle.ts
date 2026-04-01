@@ -17,9 +17,7 @@ export function useCreateArticle() {
       {
         onSuccess: async () => {
           await router.replace('/boards');
-          queryClient.invalidateQueries({
-            queryKey: ARTICLE_QUERY_KEYS.list(),
-          });
+
           queryClient.invalidateQueries({
             queryKey: ['articles', 'list'],
           });
