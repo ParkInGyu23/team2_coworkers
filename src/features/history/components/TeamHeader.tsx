@@ -48,7 +48,7 @@ export function TeamHeader({ selectedCategory, onResetCategory }: TeamHeaderProp
 
       <div
         className={cn(
-          'pointer-events-none absolute top-0 right-17 z-0 hidden h-full w-75 bg-[#C9DAFD] xl:block',
+          'pointer-events-none absolute top-0 right-17 z-0 hidden h-full w-75 bg-[#a6c4ff] xl:block',
         )}
         style={{
           WebkitMaskImage: `url(${decorationImg.src})`,
