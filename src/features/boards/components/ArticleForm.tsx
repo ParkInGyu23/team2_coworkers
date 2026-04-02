@@ -1,5 +1,6 @@
 import { Button } from '@/shared/ui/Button';
 import { FormField } from '@/shared/ui/formfield/index';
+import { IconArrowLeft } from '@/shared/ui/icons/IconArrowLeft';
 import { ImagePreviewList } from '@/shared/ui/imagePicker/ImagePreviewList';
 import { ImageUploadSlot } from '@/shared/ui/imagePicker/ImageUploadSlot';
 import Link from 'next/link';
@@ -51,69 +52,73 @@ export function ArticleForm({
       onSubmit={handleSubmit}
       className="flex min-h-screen items-start justify-center bg-gray-100 p-6"
     >
-      <div className="relative w-full max-w-225 rounded-2xl bg-white p-5 px-18 pt-9 pb-18 shadow-xl">
-        <Link href="/boards" className="text-slate-400">
-          뒤로가기
+      <div className="relative w-full max-w-225 rounded-2xl bg-white shadow-xl">
+        <Link
+          href="/boards"
+          className="flex items-center gap-1 px-8 pt-6 text-slate-400 hover:text-slate-600"
+        >
+          <IconArrowLeft size={24} />
         </Link>
+        <div className="p-5 px-18 pt-5 pb-18">
+          <h2 className="mb-4 pt-5 text-xl font-bold">
+            {mode === 'edit' ? '게시글 수정' : '게시글 쓰기'}
+          </h2>
+          <div className="mt-10 mb-4">
+            <FormField isInvalid={isTitleInvalid}>
+              <FormField.Label>
+                제목 <span className="text-red-500">*</span>
+              </FormField.Label>
 
-        <h2 className="mb-4 pt-5 text-xl font-bold">
-          {mode === 'edit' ? '게시글 수정' : '게시글 쓰기'}
-        </h2>
-        <div className="mt-10 mb-4">
-          <FormField isInvalid={isTitleInvalid}>
-            <FormField.Label>
-              제목 <span className="text-red-500">*</span>
-            </FormField.Label>
+              <FormField.Control>
+                <input
+                  type="text"
+                  placeholder="제목을 입력해주세요."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="text-txt-default mt-3 h-12 w-full rounded-lg border border-slate-200 px-3 py-2 text-lg"
+                />
+              </FormField.Control>
 
-            <FormField.Control>
-              <input
-                type="text"
-                placeholder="제목을 입력해주세요."
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="text-txt-default mt-3 h-12 w-full rounded-lg border border-slate-200 px-3 py-2 text-lg"
-              />
-            </FormField.Control>
-
-            <FormField.Message>{isTitleInvalid && '제목을 입력해주세요.'}</FormField.Message>
-          </FormField>
-        </div>
-        <div className="mt-9 mb-4">
-          <FormField isInvalid={isContentInvalid}>
-            <FormField.Label>
-              내용 <span className="text-red-500">*</span>
-            </FormField.Label>
-
-            <FormField.Control>
-              <textarea
-                placeholder="내용을 입력하세요"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                rows={5}
-                className="text-txt-default mt-3 h-60 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-lg"
-              />
-            </FormField.Control>
-
-            <FormField.Message>{isContentInvalid && '내용을 입력해주세요.'}</FormField.Message>
-          </FormField>
-        </div>
-        <div className="mb-4">
-          <label className="mb-2 block text-lg font-bold">이미지</label>
-
-          <div className="mt-3 flex flex-wrap gap-2">
-            <ImageUploadSlot
-              disabled={images.length >= MAX_COUNT}
-              onUpload={handleUpload}
-              count={images.length}
-              maxCount={MAX_COUNT}
-            />
-
-            <ImagePreviewList images={images} onRemove={handleRemove} />
+              <FormField.Message>{isTitleInvalid && '제목을 입력해주세요.'}</FormField.Message>
+            </FormField>
           </div>
+          <div className="mt-9 mb-4">
+            <FormField isInvalid={isContentInvalid}>
+              <FormField.Label>
+                내용 <span className="text-red-500">*</span>
+              </FormField.Label>
+
+              <FormField.Control>
+                <textarea
+                  placeholder="내용을 입력하세요"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  rows={5}
+                  className="text-txt-default mt-3 h-50 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-lg md:h-60"
+                />
+              </FormField.Control>
+
+              <FormField.Message>{isContentInvalid && '내용을 입력해주세요.'}</FormField.Message>
+            </FormField>
+          </div>
+          <div className="mb-4">
+            <label className="mb-2 block text-lg font-bold">이미지</label>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              <ImageUploadSlot
+                disabled={images.length >= MAX_COUNT}
+                onUpload={handleUpload}
+                count={images.length}
+                maxCount={MAX_COUNT}
+              />
+
+              <ImagePreviewList images={images} onRemove={handleRemove} />
+            </div>
+          </div>
+          <Button type="submit" className="mt-14 h-12 w-full rounded-[12px]">
+            {mode === 'edit' ? '수정하기' : '등록하기'}
+          </Button>
         </div>
-        <Button type="submit" className="mt-14 h-12 w-full rounded-[12px]">
-          {mode === 'edit' ? '수정하기' : '등록하기'}
-        </Button>
       </div>
     </form>
   );

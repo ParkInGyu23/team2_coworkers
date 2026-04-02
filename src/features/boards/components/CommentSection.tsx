@@ -7,6 +7,7 @@ import { Comment } from '../model/entities/comment.model';
 import { useUserQuery } from '@/features/user';
 import { formatDate } from '@/shared/lib/date';
 import { useCommentSection } from '../hooks/useCommentSection';
+import { DeleteCommentModal } from './DeleteCommentModal';
 
 interface Props {
   article: Article;
@@ -22,11 +23,16 @@ export default function CommentSection({ article, comments }: Props) {
     updateInputs,
     editCommentIds,
     isCreating,
+    isActive,
     handleCreateComment,
     handleInputChange,
     toggleEdit,
     deleteComment,
     updateComment,
+    openDeleteModal,
+    confirmDelete,
+    closeDeleteModal,
+    isDeleteOpen,
   } = useCommentSection(article.id);
 
   return (
@@ -51,12 +57,10 @@ export default function CommentSection({ article, comments }: Props) {
           }}
           className="rounded-none border-0 border-y !border-slate-200 shadow-none"
           rightElement={
-            <button onClick={handleCreateComment} disabled={isCreating || !commentInput.trim()}>
+            <button onClick={handleCreateComment} disabled={!isActive}>
               <IconCommentBtn
                 size={24}
-                className={`bg-icon-primary rounded-full text-white ${
-                  isCreating ? 'opacity-50' : ''
-                }`}
+                className={`rounded-full text-white transition ${isActive ? 'bg-icon-primary' : 'cursor-not-allowed bg-slate-300'} `}
               />
             </button>
           }
@@ -98,7 +102,7 @@ export default function CommentSection({ article, comments }: Props) {
                     ) : isOwner ? (
                       <KebabMenu
                         onEdit={() => toggleEdit(c.id, c.content)}
-                        onDelete={() => deleteComment(c.id)}
+                        onDelete={() => openDeleteModal(c.id)}
                       />
                     ) : (
                       <div className="invisible h-5 w-5" />
@@ -121,6 +125,11 @@ export default function CommentSection({ article, comments }: Props) {
           );
         })}
       </div>
+      <DeleteCommentModal
+        isOpen={isDeleteOpen}
+        onClose={closeDeleteModal}
+        onConfirmDelete={confirmDelete}
+      />
     </div>
   );
 }

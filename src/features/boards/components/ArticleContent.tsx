@@ -9,6 +9,7 @@ import { useToggleLikeArticle } from '../hooks/useToggleLikeArticle';
 import { useDeleteArticle } from '../hooks/useDeleteArticleMutation';
 import { IconHeart } from '@/shared/ui/icons/IconHeart';
 import { useRouter } from 'next/router';
+import { DeleteArticleModal } from './DeleteArticleModal';
 
 interface Props {
   article: ArticleDetail;
@@ -19,6 +20,11 @@ export default function ArticleContent({ article }: Props) {
   const { data: currentUser } = useUserQuery();
   const { toggleLike } = useToggleLikeArticle();
   const { deleteArticle } = useDeleteArticle();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const handleConfirmDelete = () => {
+    deleteArticle(article.id);
+    setIsDeleteOpen(false);
+  };
   const router = useRouter();
   return (
     <>
@@ -28,7 +34,7 @@ export default function ArticleContent({ article }: Props) {
         {currentUser?.id === article.writer.id && (
           <KebabMenu
             onEdit={() => router.push(`/boards/${article.id}/editArticle`)}
-            onDelete={() => deleteArticle(article.id)}
+            onDelete={() => setIsDeleteOpen(true)}
           />
         )}
       </div>
@@ -48,11 +54,11 @@ export default function ArticleContent({ article }: Props) {
             <img
               src={article.image}
               alt={article.title}
-              className="h-35 w-35 rounded-xl border"
+              className="h-35 w-35 rounded-xl md:h-45 md:w-45"
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="flex h-35 w-35 items-center justify-center rounded-xl border bg-gray-100 text-gray-400">
+            <div className="flex h-35 w-35 items-center justify-center rounded-xl border bg-gray-100 text-gray-400 md:h-45 md:w-45">
               이미지 오류
             </div>
           ))}
@@ -66,6 +72,11 @@ export default function ArticleContent({ article }: Props) {
           </div>
         </div>
       </div>
+      <DeleteArticleModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirmDelete={handleConfirmDelete}
+      />
     </>
   );
 }
