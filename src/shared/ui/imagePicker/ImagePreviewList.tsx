@@ -35,7 +35,7 @@ export function ImagePreviewList({ images, onRemove, className }: Props) {
           <button
             type="button"
             onClick={() => onRemove(index)}
-            className="absolute top-1 right-1 bg-black px-1 text-xs text-white"
+            className="absolute -top-1 -right-1 border border-slate-400 w-6 h-6 flex items-center justify-center  bg-white px-1 text-xs rounded-full text-slate-500"
           >
             <IconClose size={16} />
           </button>

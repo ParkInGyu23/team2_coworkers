@@ -2,21 +2,24 @@ import { IconUser } from '@/shared/ui/icons';
 import { IconCommentBtn } from '@/shared/ui/icons/IconCommentBtn';
 import { Input } from '@/shared/ui/input/Input';
 import KebabMenu from '@/features/boards/components/KebabMenu';
-import { Article } from '../model/entities/article.model';
+import { Article, ArticleDetail } from '../model/entities/article.model';
 import { Comment } from '../model/entities/comment.model';
 import { useUserQuery } from '@/features/user';
 import { formatDate } from '@/shared/lib/date';
 import { useCommentSection } from '../hooks/useCommentSection';
-import { DeleteCommentModal } from './DeleteCommentModal';
+import { ConfirmDeleteModal } from './ConfirmDeleteModal';
+import { IconHeart } from '@/shared/ui/icons/IconHeart';
+import { IconHeartEmpty } from '@/shared/ui/icons/IconHeartEmpty';
+import { useToggleLikeArticle } from '../hooks/useToggleLikeArticle';
 
 interface Props {
-  article: Article;
+  article: ArticleDetail;
   comments: Comment[];
 }
 
 export default function CommentSection({ article, comments }: Props) {
   const { data: currentUser } = useUserQuery();
-
+  const { toggleLike } = useToggleLikeArticle();
   const {
     commentInput,
     setCommentInput,
@@ -27,7 +30,6 @@ export default function CommentSection({ article, comments }: Props) {
     handleCreateComment,
     handleInputChange,
     toggleEdit,
-    deleteComment,
     updateComment,
     openDeleteModal,
     confirmDelete,
@@ -41,6 +43,14 @@ export default function CommentSection({ article, comments }: Props) {
         <h2 className="mb-2 flex gap-1 font-semibold">
           댓글 <span className="text-brand-primary">{article.commentCount}</span>
         </h2>
+        <div className="flex mb-2">
+          <div className="flex items-center gap-1">
+            <button onClick={() => toggleLike(article.id, article.isLiked)}>
+              {article.isLiked ? <IconHeart /> : <IconHeartEmpty />}
+            </button>
+            <div>{article.likeCount}</div>
+          </div>
+        </div>
       </div>
 
       <div className="mt-2 flex items-center gap-4">
@@ -125,10 +135,12 @@ export default function CommentSection({ article, comments }: Props) {
           );
         })}
       </div>
-      <DeleteCommentModal
+      <ConfirmDeleteModal
         isOpen={isDeleteOpen}
         onClose={closeDeleteModal}
-        onConfirmDelete={confirmDelete}
+        onConfirm={confirmDelete}
+        title="댓글을 삭제할까요?"
+        description="삭제된 댓글은 복구할 수 없습니다."
       />
     </div>
   );

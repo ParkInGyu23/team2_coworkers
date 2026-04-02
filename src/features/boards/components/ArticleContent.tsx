@@ -4,12 +4,9 @@ import { useState } from 'react';
 import { ArticleDetail } from '../model/entities/article.model';
 import { useUserQuery } from '@/features/user';
 import { formatDate } from '@/shared/lib/date';
-import { IconHeartEmpty } from '@/shared/ui/icons/IconHeartEmpty';
-import { useToggleLikeArticle } from '../hooks/useToggleLikeArticle';
 import { useDeleteArticle } from '../hooks/useDeleteArticleMutation';
-import { IconHeart } from '@/shared/ui/icons/IconHeart';
 import { useRouter } from 'next/router';
-import { DeleteArticleModal } from './DeleteArticleModal';
+import { ConfirmDeleteModal } from './ConfirmDeleteModal';
 
 interface Props {
   article: ArticleDetail;
@@ -18,7 +15,6 @@ interface Props {
 export default function ArticleContent({ article }: Props) {
   const [imgError, setImgError] = useState(false);
   const { data: currentUser } = useUserQuery();
-  const { toggleLike } = useToggleLikeArticle();
   const { deleteArticle } = useDeleteArticle();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const handleConfirmDelete = () => {
@@ -62,20 +58,13 @@ export default function ArticleContent({ article }: Props) {
               이미지 오류
             </div>
           ))}
-
-        <div className="flex items-end">
-          <div className="flex items-center gap-1">
-            <button onClick={() => toggleLike(article.id, article.isLiked)}>
-              {article.isLiked ? <IconHeart /> : <IconHeartEmpty />}
-            </button>
-            <div>{article.likeCount}</div>
-          </div>
-        </div>
       </div>
-      <DeleteArticleModal
+      <ConfirmDeleteModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        onConfirmDelete={handleConfirmDelete}
+        onConfirm={handleConfirmDelete}
+        title="게시글을 삭제할까요?"
+        description="삭제된 게시글은 복구할 수 없습니다."
       />
     </>
   );

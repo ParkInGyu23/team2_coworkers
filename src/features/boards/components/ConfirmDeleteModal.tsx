@@ -1,30 +1,41 @@
-// DeleteArticleModal.tsx
+
 import { Modal } from '@/shared/ui/modal';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onConfirmDelete: () => void;
+  onConfirm: () => void;
+
+  title?: string;
+  description?: string;
+  confirmText?: string;
 };
 
-export function DeleteArticleModal({ isOpen, onClose, onConfirmDelete }: Props) {
+export function ConfirmDeleteModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  title = '삭제하시겠습니까?',
+  description = '삭제된 데이터는 복구할 수 없습니다.',
+  confirmText = '삭제하기',
+}: Props) {
   return (
     <Modal isOpen={isOpen} close={onClose}>
       <Modal.Content size="sm">
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onConfirmDelete();
+            onConfirm();
           }}
         >
           <Modal.Header className="pb-4">
-            <Modal.Title>게시글을 삭제할까요?</Modal.Title>
+            <Modal.Title>{title}</Modal.Title>
             <Modal.Description className="text-sm">
-              삭제된 게시글은 복구할 수 없습니다.
+              {description}
             </Modal.Description>
           </Modal.Header>
 
-          <Modal.Footer className="flex gap-2 pt-2">
+          <Modal.Footer className="pt-2 flex gap-2">
             <button
               type="button"
               onClick={onClose}
@@ -37,7 +48,7 @@ export function DeleteArticleModal({ isOpen, onClose, onConfirmDelete }: Props) 
               type="submit"
               className="h-12 w-full rounded-xl bg-red-500 text-sm font-semibold text-white hover:opacity-90"
             >
-              삭제하기
+              {confirmText}
             </button>
           </Modal.Footer>
         </form>
