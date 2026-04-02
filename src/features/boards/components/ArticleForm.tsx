@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/shared/ui/Button';
 import { FormField } from '@/shared/ui/formfield';
 import { IconArrowLeft } from '@/shared/ui/icons/IconArrowLeft';
