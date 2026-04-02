@@ -70,8 +70,10 @@ export function TeamCard({
           })),
     [memberImages, members],
   );
-  const visibleMemberImages = memberImages.slice(0, 3);
-  const showMemberSummary = visibleMemberImages.length > 0 || normalizedMembers.length > 0 || typeof memberCount === 'number';
+  /** 헤더 스택: 그룹 상세에만 이미지가 없을 때 getGroupMember로 채운 members.imageSrc 사용 */
+  const headerAvatarMembers = useMemo(() => normalizedMembers.slice(0, 3), [normalizedMembers]);
+  const showMemberSummary =
+    headerAvatarMembers.length > 0 || normalizedMembers.length > 0 || typeof memberCount === 'number';
 
   return (
     <article
@@ -87,24 +89,21 @@ export function TeamCard({
             type="button"
             onClick={openMemberModal}
             aria-label="전체 멤버 보기"
-            className="inline-flex h-[40px] items-center rounded-[12px] border border-[var(--Border-Primary,#E2E8F0)] px-[10px] lg:hidden"
+            className="inline-flex h-[40px] cursor-pointer items-center rounded-[12px] border border-[var(--Border-Primary,#E2E8F0)] px-[10px] lg:hidden"
           >
             <div className="flex items-center">
-              {visibleMemberImages.map((imageSrc, idx) => (
-                <span
-                  key={`${String(imageSrc)}-${idx}`}
-                  className={cn('inline-flex', idx > 0 && '-ml-1')}
-                >
+              {headerAvatarMembers.map((m, idx) => (
+                <span key={m.id} className={cn('inline-flex', idx > 0 && '-ml-1')}>
                   <Profile
                     size="sm"
-                    imageSrc={imageSrc}
+                    imageSrc={m.imageSrc}
                     decorative
                     className="md:hidden"
                     borderClassName="ring-1 ring-background-primary"
                   />
                   <Profile
-                    size="md"
-                    imageSrc={imageSrc}
+                    size="sm"
+                    imageSrc={m.imageSrc}
                     decorative
                     className="hidden md:inline-flex"
                     borderClassName="ring-1 ring-background-primary"

@@ -188,13 +188,15 @@ export function AppSidebar({
               isExpanded={expanded}
               icon={<BoardIcon className="text-slate-300" />}
             />
-            <SidebarNavItem
-              label="팀 참여하기"
-              href={ROUTES.ACCEPT_INVITATION}
-              isExpanded={expanded}
-              isSelected={router.pathname === '/accept-invitation'}
-              icon={<TeamIcon className="text-slate-300" />}
-            />
+            {isLoggedIn && (
+              <SidebarNavItem
+                label="팀 참여하기"
+                href={ROUTES.ACCEPT_INVITATION}
+                isExpanded={expanded}
+                isSelected={router.pathname === '/accept-invitation'}
+                icon={<TeamIcon className="text-slate-300" />}
+              />
+            )}
             {isLoggedIn && (
               <SidebarNavItem
                 label="마이 히스토리"
@@ -213,7 +215,7 @@ export function AppSidebar({
                     type="button"
                     onClick={handleTeamListToggle}
                     className={cn(
-                      'text-txt-default flex min-h-[52px] w-full items-center gap-2 rounded-lg px-3 text-left text-base font-medium',
+                      'text-txt-default flex min-h-[52px] w-full cursor-pointer items-center gap-2 rounded-lg px-3 text-left text-base font-medium',
                       'hover:bg-background-tertiary hover:text-txt-primary transition-colors',
                       'focus-visible:ring-brand-primary focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
                     )}
@@ -236,16 +238,23 @@ export function AppSidebar({
                 ) : null}
                 {(isTeamListOpen || !expanded) && (
                   <>
-                    {teamItems.map(({ id, label }) => (
-                      <SidebarNavItem
-                        key={id}
-                        label={label}
-                        isSelected={selectedTeamId === id}
-                        isExpanded={expanded}
-                        onClick={() => onTeamSelect?.(id)}
-                        icon={<TeamIcon className="text-slate-300" />}
-                      />
-                    ))}
+                    {teamItems.map(({ id, label }) => {
+                      const teamSelected = selectedTeamId === id;
+                      return (
+                        <SidebarNavItem
+                          key={id}
+                          label={label}
+                          isSelected={teamSelected}
+                          isExpanded={expanded}
+                          onClick={() => onTeamSelect?.(id)}
+                          icon={
+                            <TeamIcon
+                              className={teamSelected ? 'text-brand-primary' : 'text-slate-300'}
+                            />
+                          }
+                        />
+                      );
+                    })}
                     <SidebarNavItem
                       label="팀 추가하기"
                       href={ROUTES.TEAM_CREATE}
@@ -267,7 +276,7 @@ export function AppSidebar({
         <button
           type="button"
           onClick={handleToggle}
-          className="bg-background-primary text-txt-default hover:bg-background-tertiary hover:text-txt-primary focus-visible:ring-brand-primary absolute top-7 right-0 z-10 flex h-8 w-8 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--color-background-tertiary)] shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          className="bg-background-primary text-txt-default hover:bg-background-tertiary hover:text-txt-primary focus-visible:ring-brand-primary pointer-events-auto absolute top-7 right-0 z-50 flex h-8 w-8 translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[var(--color-background-tertiary)] shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
           aria-label="사이드바 열기"
           aria-expanded={false}
         >

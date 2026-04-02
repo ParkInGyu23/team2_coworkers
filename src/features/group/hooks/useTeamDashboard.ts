@@ -1,11 +1,6 @@
 import { useRouter } from 'next/router';
 import type { GroupDetail } from '../model/entities/group.model';
 import { useGroupQuery } from './useGroupQuery';
-import {
-  groupMembersToMemberCardItems,
-  groupMembersToMemberImagePreview,
-} from '../lib/mappers/groupMembersToMemberCardItems';
-import type { ImageAsset, MemberCardItem } from '@/shared/ui/profile';
 import { parseTeamIdFromQuery } from '../lib/parseTeamRoute';
 
 export type TeamDashboardViewModel =
@@ -17,14 +12,12 @@ export type TeamDashboardViewModel =
       phase: 'ready';
       groupIdStr: string;
       group: GroupDetail;
-      memberCardItems: MemberCardItem[];
-      memberImagesPreview: ImageAsset[];
       /** 백그라운드 재검증(refetch) 중 */
       isFetching: boolean;
     };
 
 /**
- * 팀 대시보드 도메인 상태: 라우트 → 그룹 조회 → 멤버 UI 모델까지.
+ * 팀 대시보드 도메인 상태: 라우트 → 그룹 조회. 멤버 카드/아바타는 ReadyView에서 getGroupMember로 보강.
  *
  * 에러 표시 정책:
  * - Query(`useGroupQuery`): React Query가 `ApiError`를 유지하며, 전역 인터셉터/Query 캐시와 맞물림.
@@ -62,8 +55,6 @@ export function useTeamDashboard(): TeamDashboardViewModel {
     phase: 'ready',
     groupIdStr,
     group,
-    memberCardItems: groupMembersToMemberCardItems(group.members),
-    memberImagesPreview: groupMembersToMemberImagePreview(group.members, 3),
     isFetching,
   };
 }

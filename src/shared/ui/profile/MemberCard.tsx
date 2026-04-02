@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import { cn } from '@/shared/lib/cn';
-import { MemberCardMembersSection } from './MemberCardMembersSection';
-import { useIsMobileOrTablet } from './useIsMobileOrTablet';
 import { useModal } from '@/shared/ui/modal';
-import type { MemberCardItem, MemberCardModalMode, MemberCardProps } from './memberCard.types';
-import { MemberCardModal } from './MemberCardModal';
+import { MemberCardMembersSection } from '@/shared/ui/profile/MemberCardMembersSection';
+import { MemberCardModal } from '@/shared/ui/profile/MemberCardModal';
+import type { MemberCardItem, MemberCardModalMode, MemberCardProps } from '@/shared/ui/profile/memberCard.types';
+import { useIsMobileOrTablet } from '@/shared/ui/profile/useIsMobileOrTablet';
 
 export function MemberCard({
   members,
@@ -64,7 +64,7 @@ export function MemberCard({
           <button
             type="button"
             onClick={onInvite}
-            className="shrink-0 text-sm font-semibold text-brand-primary hover:underline"
+            className="shrink-0 cursor-pointer text-sm font-semibold text-brand-primary hover:underline"
           >
             초대하기 +
           </button>

@@ -13,7 +13,7 @@ export const FOCUS_RING =
 
 /** 네비 아이템 기본 (공통 레이아웃 + 포커스) */
 export const NAV_ITEM_BASE =
-  'flex items-center gap-2 w-full min-h-[52px] px-3 rounded-lg text-left text-base font-medium transition-colors ' +
+  'flex cursor-pointer items-center gap-2 w-full min-h-[52px] px-3 rounded-lg text-left text-base font-medium transition-colors ' +
   FOCUS_RING;
 
 /** 네비 아이템 선택 상태 */
@@ -28,5 +28,5 @@ export const NAV_ITEM_ICON_WRAPPER =
 
 /** 헤더 토글 버튼 (접기/메뉴 열기) */
 export const HEADER_TOGGLE_BUTTON =
-  'shrink-0 flex items-center justify-center w-10 h-10 rounded-lg text-txt-default hover:bg-background-tertiary hover:text-txt-primary ' +
+  'relative z-10 shrink-0 flex cursor-pointer items-center justify-center w-10 h-10 rounded-lg text-txt-default hover:bg-background-tertiary hover:text-txt-primary ' +
   FOCUS_RING;

@@ -12,13 +12,19 @@ export function toGroup(dto: GroupDto): Group {
   };
 }
 
+function pickUserImage(dto: GroupMemberDto): string | null {
+  const v = dto.userImage ?? dto.user_image;
+  if (v == null || v === '') return null;
+  return v;
+}
+
 export function toGroupMember(dto: GroupMemberDto): GroupMember {
   return {
     userId: dto.userId,
     groupId: dto.groupId,
     userName: dto.userName,
     userEmail: dto.userEmail,
-    userImage: dto.userImage,
+    userImage: pickUserImage(dto),
     role: dto.role,
   };
 }

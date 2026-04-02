@@ -5,6 +5,8 @@ import { TeamCard } from '@/shared/ui/team/TeamCard';
 import { MemberCard } from '@/shared/ui/profile';
 import { TaskBoardView } from '@/features/task-board/ui';
 import type { TeamDashboardViewModel } from '@/features/group/hooks/useTeamDashboard';
+import { getGroupMember } from '@/features/group/api/getGroupMember';
+import { GROUP_QUERY_KEYS } from '@/features/group/lib/queryKeys';
 import { useGroupTasksQuery } from '@/features/group/hooks/useGroupTasksQuery';
 import { useUserQuery } from '@/features/user/hooks/useUserQuery';
 import { getTaskList } from '@/features/task/api/getTaskList';
@@ -25,7 +27,7 @@ type Props = {
 };
 
 export function TeamDashboardReadyView({ vm }: Props) {
-  const { group, memberCardItems, memberImagesPreview, isFetching } = vm;
+  const { group, isFetching } = vm;
   const { data: groupTasks = [] } = useGroupTasksQuery(group.id);
   const { data: me } = useUserQuery();
   const { handleCreateTaskGroup, handleUpdateTaskGroup, handleDeleteTaskGroup, handleToggleTask, handleCompleteTaskGroupByDrop } =
@@ -56,6 +58,38 @@ export function TeamDashboardReadyView({ vm }: Props) {
       enabled: Boolean(group.id),
     })),
   });
+  const memberDetailQueries = useQueries({
+    queries: group.members.map((m) => ({
+      queryKey: GROUP_QUERY_KEYS.member(group.id, m.userId),
+      queryFn: () => getGroupMember({ groupId: group.id, memberUserId: m.userId }),
+      enabled:
+        Boolean(group.id && m.userId) &&
+        !(m.userImage != null && String(m.userImage).trim().length > 0),
+      staleTime: 5 * 60 * 1000,
+    })),
+  });
+  const enrichedMemberCardItems = useMemo(
+    () =>
+      group.members.map((gm, i) => {
+        const fetched = memberDetailQueries[i]?.data;
+        const fromFetch = fetched?.userImage?.trim();
+        const fromGroup = gm.userImage?.trim();
+        const imageSrc =
+          fromFetch && fromFetch.length > 0
+            ? fromFetch
+            : fromGroup && fromGroup.length > 0
+              ? fromGroup
+              : undefined;
+        return {
+          id: String(gm.userId),
+          name: gm.userName,
+          email: gm.userEmail,
+          imageSrc,
+          isAdmin: gm.role === 'ADMIN',
+        };
+      }),
+    [group.members, memberDetailQueries],
+  );
   const boardTaskLists = useMemo(
     () =>
       group.taskLists.map((taskList, index) => ({
@@ -106,8 +140,7 @@ export function TeamDashboardReadyView({ vm }: Props) {
           progressPercent={progressPercent}
           todayTaskCount={todayTaskCount}
           completedTaskCount={completedTaskCount}
-          memberImages={memberImagesPreview}
-          members={memberCardItems}
+          members={enrichedMemberCardItems}
           memberCount={group.members.length}
           className="w-full max-w-full"
           teamMenuMode={canManageMembers ? 'admin' : 'member'}
@@ -130,7 +163,7 @@ export function TeamDashboardReadyView({ vm }: Props) {
               onDeleteTaskGroup={handleDeleteTaskGroup}
               trailingPanel={
                 <MemberCard
-                  members={memberCardItems}
+                  members={enrichedMemberCardItems}
                   title="멤버"
                   onInvite={openInviteModal}
                   canManageMembers={canManageMembers}

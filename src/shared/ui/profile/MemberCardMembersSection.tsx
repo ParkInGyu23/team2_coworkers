@@ -53,7 +53,7 @@ export function MemberCardMembersSection({
                 type="button"
                 onClick={() => onMemberClick(member)}
                 aria-label={`${member.name} 멤버 상세 보기`}
-                className="min-w-0 flex-1 text-left"
+                className="flex min-h-0 min-w-0 flex-1 items-center text-left"
               >
                 <MemberChip
                   name={member.name}

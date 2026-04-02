@@ -15,7 +15,9 @@ export interface GroupMemberDto {
   groupId: number;
   userName: string;
   userEmail: string;
-  userImage: string | null;
+  userImage?: string | null;
+  /** 일부 API가 snake_case로 반환 */
+  user_image?: string | null;
   role: Role;
 }
 

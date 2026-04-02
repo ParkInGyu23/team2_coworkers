@@ -105,6 +105,17 @@
   animation: icon-enter 200ms ease-out both;
 }
 
+@layer base {
+  button:enabled,
+  a[href] {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
 /*스크롤바를 숨기는 클래스 정의 */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {

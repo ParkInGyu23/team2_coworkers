@@ -46,7 +46,7 @@ export function Profile({
       ) : (
         <IconUser
           size={sizePx}
-          className={cn('text-icon-inverse', iconClassName)}
+          className={cn('text-icon-primary', iconClassName)}
         />
       )}
     </div>

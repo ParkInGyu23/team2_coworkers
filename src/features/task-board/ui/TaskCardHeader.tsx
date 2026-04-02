@@ -40,25 +40,30 @@ export function TaskCardHeader({
       ref={activatorRef}
       {...dragAttributes}
       {...dragListeners}
-      className={cn('flex items-center gap-3 translate-y-[-4px] max-[767px]:translate-y-0', 'cursor-grab')}
+      className={cn(
+        'flex w-full min-h-0 items-center justify-between gap-2 sm:gap-3',
+        'cursor-grab',
+      )}
     >
-      <div className="flex min-w-0 items-center gap-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
         <button
           type="button"
           onClick={onToggleCollapsed}
           aria-label={collapsed ? '접힌 카드 펼치기' : '카드 접기'}
           className={cn(
-            'w-[24px] h-[24px] rounded-[8px] p-0 text-icon-primary hover:bg-background-secondary',
-            'flex items-center justify-center shrink-0 -translate-x-[6px]',
+            'flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-lg p-0 text-icon-primary',
+            'hover:bg-background-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2',
           )}
         >
           <IconArrowDown size={20} className={collapsed ? 'rotate-180' : undefined} />
         </button>
 
-        <div className="truncate text-sm font-semibold text-txt-primary">{cardName}</div>
+        <div className="min-w-0 flex-1 truncate text-sm font-semibold leading-none text-txt-primary">
+          {cardName}
+        </div>
       </div>
 
-      <div className="flex items-center gap-2 ml-auto">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
         <div className="flex items-center gap-1 text-[#74A1FB]">
           {isFullyCompleted ? (
             <IconDone
@@ -84,7 +89,7 @@ export function TaskCardHeader({
         <Dropdown>
           <Dropdown.Trigger
             aria-label="카드 옵션"
-            className="rounded-[8px] p-1 text-icon-primary hover:bg-background-secondary"
+            className="h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg p-0 text-icon-primary hover:bg-background-secondary"
           >
             <IconKebab size={20} />
           </Dropdown.Trigger>

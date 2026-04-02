@@ -46,7 +46,7 @@ export function Sidebar({
         role="navigation"
         aria-label="사이드바"
         className={cn(
-          'flex h-full flex-col shrink-0 bg-background-primary border-r border-[var(--color-border-primary)] transition-[width] duration-200 ease-out overflow-hidden',
+          'flex h-full flex-col shrink-0 bg-background-primary border-r-2 border-slate-400 transition-[width] duration-200 ease-out overflow-hidden',
           className,
         )}
         style={{ width }}
