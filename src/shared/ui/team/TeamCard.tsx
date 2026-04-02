@@ -89,11 +89,24 @@ export function TeamCard({
             type="button"
             onClick={openMemberModal}
             aria-label="전체 멤버 보기"
-            className="inline-flex h-[40px] cursor-pointer items-center rounded-[12px] border border-[var(--Border-Primary,#E2E8F0)] px-[10px] lg:hidden"
+            className={cn(
+              'inline-flex cursor-pointer items-center border border-[var(--Border-Primary,#E2E8F0)] lg:hidden',
+              /* 모바일: 최소 75×28, radius 8, gap 6, padding 4/8/4/4 — 멤버 많을 때는 w-max로 3인 스택+인원수까지 확장 */
+              'h-7 min-w-[75px] w-max max-w-full shrink-0 gap-1.5 rounded-lg py-1 pr-2 pl-1',
+              'md:h-[40px] md:min-w-0 md:w-auto md:shrink md:gap-0 md:rounded-[12px] md:px-[10px] md:py-0',
+            )}
           >
-            <div className="flex items-center">
+            <div className="flex min-w-0 flex-1 items-center overflow-hidden md:flex-initial">
               {headerAvatarMembers.map((m, idx) => (
-                <span key={m.id} className={cn('inline-flex', idx > 0 && '-ml-1')}>
+                <span
+                  key={m.id}
+                  className={cn(
+                    'inline-flex',
+                    idx > 0 && '-ml-1',
+                    /* 모바일 높이 28 − 세로 패딩 8 = 20px 안에 맞춤 */
+                    'max-md:[&>div]:!h-[20px] max-md:[&>div]:!w-[20px] max-md:[&>div]:!rounded-[5px]',
+                  )}
+                >
                   <Profile
                     size="sm"
                     imageSrc={m.imageSrc}
@@ -112,7 +125,9 @@ export function TeamCard({
               ))}
             </div>
             {typeof memberCount === 'number' && (
-              <span className="ml-2 text-lg font-medium leading-none text-txt-default">{memberCount}</span>
+              <span className="shrink-0 text-xs font-medium leading-none text-txt-default md:ml-2 md:text-lg">
+                {memberCount}
+              </span>
             )}
           </button>
         )}
