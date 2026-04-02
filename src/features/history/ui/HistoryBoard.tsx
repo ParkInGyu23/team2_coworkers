@@ -57,8 +57,6 @@ export function HistoryBoard({ selectedCategory, setSelectedCategory }: HistoryB
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null;
-
   return (
     <div
       className={cn(
@@ -78,7 +76,7 @@ export function HistoryBoard({ selectedCategory, setSelectedCategory }: HistoryB
           onToggleViewAll={handleViewAllForMonth}
         />
       </div>
-      {isHistoryLoading ? (
+      {!isClient || isHistoryLoading ? (
         <div className="mt-4 flex w-full flex-col">
           <div className="mb-12 flex gap-3 overflow-hidden pb-2">
             {[1, 2].map((item) => (
