@@ -81,7 +81,11 @@ export const Input = ({
               'flex w-9.5 items-center justify-end bg-transparent',
             )}
           >
-            {showPassword ? <IconEyeOpen size={24} /> : <IconEyeClose size={24} />}
+            {showPassword ? (
+              <IconEyeOpen size={24} className="hover:cursor-pointer" />
+            ) : (
+              <IconEyeClose size={24} className="hover:cursor-pointer" />
+            )}
           </button>
         )}
         {rightElement}
