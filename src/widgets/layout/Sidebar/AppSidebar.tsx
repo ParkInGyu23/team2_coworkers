@@ -47,7 +47,6 @@ function DefaultFooter({
   onLoginClick?: () => void;
 }) {
   const { data: user } = useUserQuery();
-  const router = useRouter();
   const { mutate: signOut } = useSignOut();
 
   if (!isLoggedIn) {
@@ -63,7 +62,7 @@ function DefaultFooter({
           {showProfileImage && (
             <span
               className={cn(
-                'flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden',
+                'flex h-10 w-10 shrink-0 items-center justify-center',
                 defaultProfileBgClass,
               )}
               aria-hidden
@@ -95,7 +94,7 @@ function DefaultFooter({
   const displayEmail = user?.email ?? '';
 
   return (
-    <SidebarFooter>
+    <SidebarFooter className="overflow-visible!">
       <Dropdown>
         <Dropdown.Trigger className="w-full text-left">
           {isExpanded ? (
@@ -121,19 +120,13 @@ function DefaultFooter({
           className="border-background-tertiary bottom-full z-[100] mb-2 w-21.5 min-w-0 overflow-hidden rounded-xl py-0"
         >
           <SidebarDropdownItem
-            onClick={() => router.push('/mypage')}
+            href="/mypage"
             className="min-h-10 justify-center rounded-none px-2 text-[13px]"
           >
             계정 설정
           </SidebarDropdownItem>
           <SidebarDropdownItem
-            onClick={() => {
-              signOut(undefined, {
-                onSuccess: () => {
-                  router.push('/');
-                },
-              });
-            }}
+            onClick={() => signOut()}
             className="min-h-10 justify-center rounded-none px-2 text-[13px]"
           >
             로그아웃
@@ -164,7 +157,7 @@ export function AppSidebar({
   const expanded = mobileDrawer ? true : isExpanded;
 
   return (
-    <div className="border-background-tertiary relative h-full shrink-0 overflow-visible border-r">
+    <div className="border-background-tertiary bg-background-primary relative z-50 h-full shrink-0 overflow-visible border-r">
       <Sidebar
         isExpanded={expanded}
         onToggle={mobileDrawer ? () => {} : handleToggle}
@@ -178,7 +171,7 @@ export function AppSidebar({
             />
           )
         }
-        className={mobileDrawer ? 'h-full' : undefined}
+        className={cn('overflow-visible!', mobileDrawer ? 'h-full' : undefined)}
       >
         {mobileDrawer ? (
           <SidebarHeader

@@ -80,10 +80,10 @@ export function AppLayout({ children, sidebarProps, className }: AppLayoutProps)
   return (
     <div className={cn('bg-background-primary flex min-h-screen', className)}>
       {/* 긴 메인(랜딩)에서 사이드바가 문서 높이만큼 늘지 않도록 뷰포트에 고정 */}
-      <div className="sticky top-0 z-50 h-screen shrink-0">
+      <div className="bg-background-primary sticky top-0 z-[9999] h-screen shrink-0 !overflow-visible">
         <AppSidebar {...sidebarProps} />
       </div>
-      <main className="relative z-0 min-h-0 flex-1">{children}</main>
+      <main className="min-h-0 flex-1">{children}</main>
     </div>
   );
 }
