@@ -237,16 +237,19 @@ export function AppSidebar({
                 icon={<BoardIcon className="text-slate-300" />}
               />
             )}
-            <SidebarNavItem
-              label="팀 추가하기"
-              href={ROUTES.TEAM_CREATE}
-              isExpanded={expanded}
-              icon={<PlusIcon />}
-              className={cn(
-                expanded &&
-                  'border-brand-primary bg-background-primary text-brand-primary hover:bg-brand-secondary hover:text-brand-primary min-h-13 w-full justify-center gap-1 rounded-lg border px-3 py-2 text-center',
-              )}
-            />
+
+            {isLoggedIn && (
+              <SidebarNavItem
+                label="팀 추가하기"
+                href={ROUTES.TEAM_CREATE}
+                isExpanded={expanded}
+                icon={<PlusIcon />}
+                className={cn(
+                  expanded &&
+                    'border-brand-primary bg-background-primary text-brand-primary hover:bg-brand-secondary hover:text-brand-primary min-h-13 w-full justify-center gap-1 rounded-lg border px-3 py-2 text-center',
+                )}
+              />
+            )}
 
             {isLoggedIn && (
               <>
@@ -279,16 +282,23 @@ export function AppSidebar({
                 ) : null}
                 {(isTeamListOpen || !expanded) && (
                   <>
-                    {teamItems.map(({ id, label }) => (
-                      <SidebarNavItem
-                        key={id}
-                        label={label}
-                        isSelected={selectedTeamId === id}
-                        isExpanded={expanded}
-                        onClick={() => onTeamSelect?.(id)}
-                        icon={<TeamIcon className="text-slate-300" />}
-                      />
-                    ))}
+                    {teamItems.map(({ id, label }) => {
+                      const isTeamSelected = selectedTeamId === id;
+                      return (
+                        <SidebarNavItem
+                          key={id}
+                          label={label}
+                          isSelected={isTeamSelected}
+                          isExpanded={expanded}
+                          onClick={() => onTeamSelect?.(id)}
+                          icon={
+                            <TeamIcon
+                              className={isTeamSelected ? 'text-brand-primary' : 'text-slate-300'}
+                            />
+                          }
+                        />
+                      );
+                    })}
                   </>
                 )}
               </>
