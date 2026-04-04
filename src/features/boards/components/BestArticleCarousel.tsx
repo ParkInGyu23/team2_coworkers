@@ -48,6 +48,7 @@ export function BestArticleCarousel({ best, onPrev, onNext, onSwipe }: BestArtic
       <div className="mt-5 grid grid-cols-3 items-center">
         <div />
         <div className="flex justify-center gap-2">
+          
           {Array.from({ length: best.total }).map((_, i) => (
             <button
               key={i}
