@@ -5,7 +5,7 @@ import { debounce } from '../utils/debounce';
 import { useBestArticleQuery } from './useBestArticleQuery';
 
 export function useBoardsPage() {
-  const { data: allData, isLoading, error } = useBestArticleQuery({ orderBy: 'recent' ,pageSize:1000});
+  const { data: allData, isLoading, error } = useBestArticleQuery({ orderBy: 'like' ,pageSize:15});
   const allList = allData?.list || [];
   const best = useBestArticles(allList);
 

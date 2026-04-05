@@ -11,7 +11,7 @@ import { ConfirmDeleteModal } from './ConfirmDeleteModal';
 import { IconHeart } from '@/shared/ui/icons/IconHeart';
 import { IconHeartEmpty } from '@/shared/ui/icons/IconHeartEmpty';
 import { useToggleLikeArticle } from '../hooks/useToggleLikeArticle';
-
+import { cn } from '@/shared/lib/cn';
 interface Props {
   article: ArticleDetail;
   comments: Comment[];
@@ -76,7 +76,10 @@ export default function CommentSection({ article, comments }: Props) {
             <button onClick={handleCreateComment} disabled={!isActive || !isLoggedIn}>
               <IconCommentBtn
                 size={24}
-                className={`rounded-full text-white transition ${isActive && isLoggedIn ? 'bg-icon-primary' : 'cursor-not-allowed bg-slate-300'} `}
+                className={cn(
+                  'rounded-full text-white transition',
+                  isActive && isLoggedIn ? 'bg-icon-primary' : 'cursor-not-allowed bg-slate-300',
+                )}
               />
             </button>
           }
