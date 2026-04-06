@@ -20,7 +20,7 @@ export function BoardToolbar({ sortOption, onChangeSort }: BoardToolbarProps) {
           className="flex h-14 w-14 items-center justify-center rounded-full border border-blue-500 bg-blue-500"
           onClick={() => router.push('/boards/createArticle')}
         >
-          <IconPencil size={24} className="text-white" />
+          <IconPencil size={24} className="cursor-pointer text-white" />
         </button>
       ) : (
         <div></div>
