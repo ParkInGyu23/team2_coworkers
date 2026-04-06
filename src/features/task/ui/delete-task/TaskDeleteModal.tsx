@@ -6,16 +6,31 @@ type Props = {
   taskId: number;
   title: string;
   onClose: () => void;
+  onDeleteSuccess?: () => void;
+  date?: string;
 };
 
-export default function TaskDeleteModal({ taskId, title, onClose }: Props) {
+export default function TaskDeleteModal({
+  taskId,
+  title,
+  onClose,
+  onDeleteSuccess,
+  date,
+}: Props) {
   const params = useTaskParams();
 
   if (!params) return null;
 
   return (
     <Modal isOpen open={() => {}} close={onClose}>
-      <TaskDeleteModalContent params={params} taskId={taskId} title={title} onClose={onClose} />
+      <TaskDeleteModalContent
+        params={params}
+        date={date}
+        taskId={taskId}
+        title={title}
+        onClose={onClose}
+        onDeleteSuccess={onDeleteSuccess}
+      />
     </Modal>
   );
 }

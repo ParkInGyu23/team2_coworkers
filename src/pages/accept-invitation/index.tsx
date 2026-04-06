@@ -1,73 +1,70 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactElement, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
 import { useAcceptInvitationMutation } from '@/features/group/hooks/useAcceptInvitationMutation';
 import { parseInvitationToken } from '@/features/group/lib/parseInvitationToken';
 import { useUserQuery } from '@/features/user/hooks/useUserQuery';
-import { isApiError } from '@/shared/api/mapApiError';
 import { teamDashboardPath, ROUTES } from '@/shared/constants/routes';
 import { GlobalLayout } from '@/widgets/layout/GlobalLayout';
-import { USER_QUERY_KEYS } from '@/features/user/lib/queryKeys';
 import { FormField } from '@/shared/ui/formfield';
 import { Input } from '@/shared/ui/input/Input';
 import { Button } from '@/shared/ui/Button';
 
 export default function AcceptInvitationPage() {
   const router = useRouter();
-  const { data: user, isLoading: isUserLoading } = useUserQuery();
-  const { mutateAsync, isPending } = useAcceptInvitationMutation();
-  const queryClient = useQueryClient();
+  const { data: user, isPending: isUserPending } = useUserQuery();
   const [teamLink, setTeamLink] = useState('');
 
+  const { mutate, isPending } = useAcceptInvitationMutation({
+    onSuccess: async (data) => {
+      await router.push(teamDashboardPath(String(data.groupId)));
+    },
+    onError: () => {},
+  });
+
   const rawToken = router.query.token;
-  const queryToken =
+  const queryTokenFromRouter =
     typeof rawToken === 'string' ? rawToken : Array.isArray(rawToken) ? rawToken[0] : undefined;
 
   useEffect(() => {
-    if (!router.isReady || !queryToken) return;
+    if (!router.isReady || !queryTokenFromRouter) return;
     setTeamLink(
-      `${window.location.origin}/accept-invitation?token=${encodeURIComponent(queryToken)}`,
+      `${window.location.origin}/accept-invitation?token=${encodeURIComponent(queryTokenFromRouter)}`,
     );
-  }, [router.isReady, queryToken]);
+  }, [router.isReady, queryTokenFromRouter]);
 
   const postLoginRedirectPath = (): string => {
-    const token = queryToken ?? parseInvitationToken(teamLink);
+    const token = queryTokenFromRouter ?? parseInvitationToken(teamLink);
     if (token) {
       return `${ROUTES.ACCEPT_INVITATION}?token=${encodeURIComponent(token)}`;
     }
     return ROUTES.ACCEPT_INVITATION;
   };
 
-  const handleJoin = async () => {
-    const token = parseInvitationToken(teamLink);
-    if (!token) {
+  const canJoinWithSession = Boolean(user?.email);
+  const isSubmitDisabled = isPending || isUserPending || !canJoinWithSession;
+
+  const handleJoin = () => {
+    if (!user?.email) {
+      return;
+    }
+    const invitationToken =
+      (typeof queryTokenFromRouter === 'string' && queryTokenFromRouter.trim() !== ''
+        ? queryTokenFromRouter.trim()
+        : null) ?? parseInvitationToken(teamLink);
+    if (!invitationToken) {
       toast.error('팀 링크를 확인해 주세요.');
       return;
     }
-    if (!user?.email) {
-      toast.error('로그인 후 팀에 참여할 수 있습니다.');
-      void router.push({
-        pathname: ROUTES.LOGIN,
-        query: { redirect: postLoginRedirectPath() },
-      });
-      return;
-    }
 
-    try {
-      const result = await mutateAsync({
-        body: {
-          userEmail: user.email,
-          token,
-        },
-      });
-      toast.success('팀에 참여했습니다.');
-      queryClient.invalidateQueries({ queryKey: USER_QUERY_KEYS.groups() });
-      await router.push(teamDashboardPath(String(result.groupId)));
-    } catch (error) {
-      toast.error(isApiError(error) ? error.message : '팀 참여에 실패했습니다.');
-    }
+    mutate({
+      body: {
+        userEmail: user.email,
+        token: invitationToken,
+      },
+    });
   };
 
   return (
@@ -78,14 +75,14 @@ export default function AcceptInvitationPage() {
       </Head>
 
       <div className="flex min-h-full flex-1 items-center justify-center bg-background-secondary p-4 md:p-6">
-        <section className="w-full max-w-[420px] rounded-2xl border border-background-tertiary bg-background-primary p-6 shadow-sm md:p-8">
-          <h1 className="text-xl font-bold tracking-tight text-txt-primary">팀 참여하기</h1>
+        <section className="w-full min-w-0 max-w-[420px] rounded-2xl border border-background-tertiary bg-background-primary p-6 shadow-sm md:p-8">
+          <h1 className="break-words text-xl font-bold tracking-tight text-txt-primary">팀 참여하기</h1>
 
           <form
             className="mt-8 flex flex-col gap-6"
             onSubmit={(e) => {
               e.preventDefault();
-              void handleJoin();
+              handleJoin();
             }}
             noValidate
           >
@@ -110,16 +107,31 @@ export default function AcceptInvitationPage() {
               type="submit"
               variant="primary"
               size="lg"
-              disabled={isPending || isUserLoading}
+              disabled={isSubmitDisabled}
+              title={
+                !isUserPending && !canJoinWithSession ? '로그인 후 참여할 수 있습니다.' : undefined
+              }
               className="h-12 w-full rounded-[10px] text-base font-bold"
             >
-              {isPending ? '참여 중...' : '참여하기'}
+              {isPending ? '참여 중...' : isUserPending ? '확인 중...' : '참여하기'}
             </Button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-txt-secondary">
-            공유받은 팀 링크를 입력해 참여할 수 있어요.
-          </p>
+          {!isUserPending && !canJoinWithSession ? (
+            <p className="mt-4 break-words text-center text-sm text-txt-secondary">
+              <Link
+                href={{ pathname: ROUTES.LOGIN, query: { redirect: postLoginRedirectPath() } }}
+                className="text-brand-primary font-medium underline underline-offset-2 hover:opacity-90"
+              >
+                로그인
+              </Link>
+              후 팀에 참여할 수 있어요.
+            </p>
+          ) : (
+            <p className="mt-4 break-words text-center text-sm text-txt-secondary">
+              공유받은 팀 링크를 입력해 참여할 수 있어요.
+            </p>
+          )}
         </section>
       </div>
     </>

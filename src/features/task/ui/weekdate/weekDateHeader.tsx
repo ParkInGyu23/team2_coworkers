@@ -40,19 +40,21 @@ export default function WeekDateHeader({
   });
 
   return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h2 className="text-txt-primary text-lg font-bold">{groupName}</h2>
+    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
+      <div className="min-w-0">
+        <h2 className="text-txt-primary truncate text-base font-bold md:text-lg lg:text-xl">{groupName}</h2>
       </div>
-      <div className="flex items-center gap-2">
-        <h2 className="text-txt-primary text-lg font-semibold">{formatMonth(value)}</h2>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 sm:gap-3">
+        <h2 className="text-txt-primary shrink-0 text-sm font-semibold md:text-base lg:text-lg">
+          {formatMonth(value)}
+        </h2>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <Button
             className="bg-primary h-4 w-4 rounded-full border border-gray-300 p-0"
             variant="ghost"
             onClick={onPrev}
-            aria-label="PrevWeek-Button"
+            aria-label="이전 달"
           >
             <IconArrowLeft size={12} />
           </Button>
@@ -61,7 +63,7 @@ export default function WeekDateHeader({
             className="bg-primary h-4 w-4 rounded-full border border-gray-300 p-0"
             variant="ghost"
             onClick={onNext}
-            aria-label="NextWeek-Button"
+            aria-label="다음 달"
           >
             <IconArrowRight size={12} />
           </Button>

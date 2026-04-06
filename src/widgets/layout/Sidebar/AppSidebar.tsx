@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -34,6 +34,38 @@ import { useSidebarTeamItems } from './useSidebarTeamItems';
 
 const defaultProfileImgSrc = getImageSrc(userIcon);
 const defaultProfileBgClass = 'rounded-xl bg-[#E2E8F0]';
+
+const drawerToggleNoop = () => {};
+
+type TeamSidebarRowProps = {
+  id: string;
+  label: string;
+  isSelected: boolean;
+  expanded: boolean;
+  onSelect: (id: string) => void;
+};
+
+const TeamSidebarRow = memo(function TeamSidebarRow({
+  id,
+  label,
+  isSelected,
+  expanded,
+  onSelect,
+}: TeamSidebarRowProps) {
+  const handleClick = useCallback(() => {
+    onSelect(id);
+  }, [id, onSelect]);
+
+  return (
+    <SidebarNavItem
+      label={label}
+      isSelected={isSelected}
+      isExpanded={expanded}
+      onClick={handleClick}
+      icon={<TeamIcon className={isSelected ? 'text-brand-primary' : 'text-slate-300'} />}
+    />
+  );
+});
 
 function DefaultFooter({
   isExpanded,
@@ -152,15 +184,26 @@ export function AppSidebar({
   const [isTeamListOpen, setIsTeamListOpen] = useState(true);
   const teamItems = useSidebarTeamItems({ teams, isLoggedIn });
 
-  const handleToggle = () => setIsExpanded((v) => !v);
-  const handleTeamListToggle = () => setIsTeamListOpen((v) => !v);
+  const handleToggle = useCallback(() => {
+    setIsExpanded((v) => !v);
+  }, []);
+  const handleTeamListToggle = useCallback(() => {
+    setIsTeamListOpen((v) => !v);
+  }, []);
+  const handleTeamSelect = useCallback(
+    (id: string) => {
+      onTeamSelect?.(id);
+    },
+    [onTeamSelect],
+  );
+
   const expanded = mobileDrawer ? true : isExpanded;
 
   return (
-    <div className="border-background-tertiary bg-background-primary relative z-50 h-full shrink-0 overflow-visible border-r">
+    <div className="border-background-tertiary bg-background-primary relative z-50 h-full shrink-0 overflow-visible border-r [&_a]:cursor-pointer [&_button]:cursor-pointer [&_button:disabled]:cursor-not-allowed">
       <Sidebar
         isExpanded={expanded}
-        onToggle={mobileDrawer ? () => {} : handleToggle}
+        onToggle={mobileDrawer ? drawerToggleNoop : handleToggle}
         footer={
           footer ?? (
             <DefaultFooter
@@ -176,7 +219,7 @@ export function AppSidebar({
         {mobileDrawer ? (
           <SidebarHeader
             isExpanded={true}
-            onToggle={onClose ?? (() => {})}
+            onToggle={onClose ?? drawerToggleNoop}
             showToggle={true}
             toggleButton={<CloseIcon className="text-slate-300" />}
             logo={<span className="flex-1" />}
@@ -195,7 +238,9 @@ export function AppSidebar({
                     alt="COWORKERS"
                     width={180}
                     height={32}
+                    sizes="180px"
                     className="h-8 w-auto shrink-0 object-contain object-left"
+                    style={{ width: 'auto', height: '2rem' }}
                   />
                 ) : (
                   <span className="text-brand-primary flex items-center justify-center">
@@ -256,7 +301,9 @@ export function AppSidebar({
                       'hover:bg-background-tertiary hover:text-txt-primary transition-colors',
                       'focus-visible:ring-brand-primary focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
                     )}
-                    aria-expanded={isTeamListOpen}
+                    {...(isTeamListOpen
+                      ? { 'aria-expanded': true as const }
+                      : { 'aria-expanded': false as const })}
                     aria-label={isTeamListOpen ? '팀 목록 접기' : '팀 목록 펼치기'}
                   >
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center text-slate-300 [&>svg]:h-5 [&>svg]:w-5">
@@ -275,23 +322,16 @@ export function AppSidebar({
                 ) : null}
                 {(isTeamListOpen || !expanded) && (
                   <>
-                    {teamItems.map(({ id, label }) => {
-                      const isTeamSelected = selectedTeamId === id;
-                      return (
-                        <SidebarNavItem
-                          key={id}
-                          label={label}
-                          isSelected={isTeamSelected}
-                          isExpanded={expanded}
-                          onClick={() => onTeamSelect?.(id)}
-                          icon={
-                            <TeamIcon
-                              className={isTeamSelected ? 'text-brand-primary' : 'text-slate-300'}
-                            />
-                          }
-                        />
-                      );
-                    })}
+                    {teamItems.map(({ id, label }) => (
+                      <TeamSidebarRow
+                        key={id}
+                        id={id}
+                        label={label}
+                        isSelected={selectedTeamId === id}
+                        expanded={expanded}
+                        onSelect={handleTeamSelect}
+                      />
+                    ))}
                   </>
                 )}
               </>
@@ -305,7 +345,7 @@ export function AppSidebar({
           onClick={handleToggle}
           className="bg-background-primary text-txt-default hover:bg-background-tertiary hover:text-txt-primary focus-visible:ring-brand-primary border-background-tertiary absolute top-7 right-0 z-10 flex h-8 w-8 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
           aria-label="사이드바 열기"
-          aria-expanded={false}
+          {...{ 'aria-expanded': false as const }}
         >
           <FoldRightIcon className="h-6 w-6 text-slate-300" />
         </button>

@@ -33,8 +33,8 @@ export function MemberCompactStackFace({ imageSrc, zIndex, overlap }: Props) {
         />
       ) : (
         <span className="flex h-full w-full items-center justify-center">
-          <IconUser size={10} className="text-icon-inverse md:hidden" />
-          <IconUser size={12} className="hidden text-icon-inverse md:block" />
+          <IconUser size={12} className="text-icon-inverse md:hidden" />
+          <IconUser size={14} className="hidden text-icon-inverse md:block" />
         </span>
       )}
     </div>

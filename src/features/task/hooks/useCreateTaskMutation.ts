@@ -1,4 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { GROUP_QUERY_KEYS } from '@/features/group/lib/queryKeys';
 import { createTask } from '../api/createTask';
 import { TASK_QUERY_KEYS } from '../lib/queryKeys';
 import { TaskCommonParams } from '../model/params/task.params';
@@ -26,9 +28,16 @@ export function useCreateTaskMutation(params: UseCreateTaskMutationParams) {
       return createRecurring(path, body);
     },
 
-    onSuccess: () => {
+    onSuccess: (result) => {
+      if (!result.ok) return;
+
+      toast.success('할 일이 생성 됐습니다.');
+
       queryClient.invalidateQueries({
         queryKey: TASK_QUERY_KEYS.lists(params.groupId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: GROUP_QUERY_KEYS.detail(params.groupId),
       });
     },
   });

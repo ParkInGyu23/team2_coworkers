@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -11,15 +11,29 @@ type TaskSortableCardItemProps = {
   onTaskToggle?: (taskId: string, checked: boolean) => void;
   onEditCard?: (taskGroupId: string, currentTitle: string) => void;
   onDeleteCard?: (taskGroupId: string) => void;
+  onOpenTaskList?: (taskGroupId: string) => void;
   activeTaskGroupId?: string | null;
   dropIndicatorId?: string | null;
 };
+
+function DropIndicatorLine({ edge }: { edge: 'top' | 'bottom' }) {
+  return (
+    <div
+      className={cn(
+        'pointer-events-none absolute left-0 right-0 h-[3px] rounded-full bg-brand-primary',
+        edge === 'top' ? '-top-[6px]' : '-bottom-[6px]',
+      )}
+      aria-hidden
+    />
+  );
+}
 
 export function TaskSortableCardItem({
   taskGroup,
   onTaskToggle,
   onEditCard,
   onDeleteCard,
+  onOpenTaskList,
   activeTaskGroupId,
   dropIndicatorId,
 }: TaskSortableCardItemProps) {
@@ -40,26 +54,36 @@ export function TaskSortableCardItem({
     },
   });
 
-  const style: CSSProperties = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const nodeRef = useRef<HTMLDivElement | null>(null);
+  const setRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      nodeRef.current = node;
+      setNodeRef(node);
+    },
+    [setNodeRef],
+  );
 
-  const showDropIndicatorBefore = dropIndicatorId === `before:${taskGroup.id}` && activeTaskGroupId !== taskGroup.id;
-  const showDropIndicatorAfter = dropIndicatorId === `after:${taskGroup.id}` && activeTaskGroupId !== taskGroup.id;
+  useLayoutEffect(() => {
+    const el = nodeRef.current;
+    if (!el) return;
+    el.style.transform = CSS.Transform.toString(transform) ?? '';
+    el.style.transition = transition ?? '';
+  }, [transform, transition]);
+
+  const showDropIndicatorBefore =
+    dropIndicatorId === `before:${taskGroup.id}` && activeTaskGroupId !== taskGroup.id;
+  const showDropIndicatorAfter =
+    dropIndicatorId === `after:${taskGroup.id}` && activeTaskGroupId !== taskGroup.id;
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
+      ref={setRef}
       className={cn(
         'relative will-change-transform transition-[opacity,transform] duration-200 ease-out',
         isDragging && 'opacity-60 scale-[1.01]',
       )}
     >
-      {showDropIndicatorBefore && (
-        <div className="pointer-events-none absolute -top-[6px] left-0 right-0 h-[3px] rounded-full bg-brand-primary" />
-      )}
+      {showDropIndicatorBefore && <DropIndicatorLine edge="top" />}
       <TaskCard
         taskGroup={taskGroup}
         setActivatorNodeRef={setActivatorNodeRef}
@@ -68,10 +92,9 @@ export function TaskSortableCardItem({
         onTaskToggle={onTaskToggle}
         onEditCard={(group) => onEditCard?.(group.id, group.name)}
         onDeleteCard={(group) => onDeleteCard?.(group.id)}
+        onOpenTaskList={(group) => onOpenTaskList?.(group.id)}
       />
-      {showDropIndicatorAfter && (
-        <div className="pointer-events-none absolute -bottom-[6px] left-0 right-0 h-[3px] rounded-full bg-brand-primary" />
-      )}
+      {showDropIndicatorAfter && <DropIndicatorLine edge="bottom" />}
     </div>
   );
 }

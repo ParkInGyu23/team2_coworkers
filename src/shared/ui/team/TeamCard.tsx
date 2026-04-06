@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { cn } from '@/shared/lib/cn';
 import { Profile } from '@/shared/ui/profile';
 import type { ImageAsset } from '@/shared/ui/profile';
 import type { MemberCardItem } from '@/shared/ui/profile';
-import { MemberCardModal } from '@/shared/ui/profile/MemberCardModal';
+import { MemberCardModal, type MemberCardModalProps } from '@/shared/ui/profile/MemberCardModal';
 import { sortMembersAdminsFirst } from '@/shared/ui/profile/lib/memberCard.utils';
 import { useMemberCardModalState } from '@/shared/ui/profile/useMemberCardModalState';
 import { IconGear } from '@/shared/ui/icons/IconGear';
@@ -17,6 +17,9 @@ import {
   TEAM_CARD_DROPDOWN_PANEL_CLASS_MEMBER,
   TEAM_CARD_MENU_ITEM_CLASS,
 } from './teamCard.constants';
+
+/** `memberImages` 미전달 시 기본값. 매 렌더 `[]`를 쓰면 참조가 매번 바뀌어 `useMemo`가 불필요하게 무효화됨 */
+const EMPTY_MEMBER_IMAGES: ImageAsset[] = [];
 
 export type TeamCardTeamMenuMode = 'admin' | 'member';
 
@@ -32,16 +35,19 @@ export type TeamCardProps = {
   onDeleteTeam?: () => void;
   /** `teamMenuMode === 'member'`일 때 */
   onLeaveTeam?: () => void;
-  /** 팀원 프로필 이미지(최대 3개 노출) */
+  /** `members`가 없을 때만 사용하는 폴백 이미지 목록(최대 3명 분량 권장) */
   memberImages?: ImageAsset[];
   /** 모바일/태블릿에서 열리는 전체 멤버 목록 */
   members?: MemberCardItem[];
-  /** 팀원 수 표기(예: 4) */
+  /** 전체 팀원 수(숫자). 없으면 `members`·폴백 목록 길이로 표기 */
   memberCount?: number;
   /** 기본: 모바일 375x196, 태블릿 620x239, 데스크톱 1120x239 */
   className?: string;
   /** 통계 블록(오늘의 할 일·완료) 래퍼 커스텀 */
   statsClassName?: string;
+  /** 관리자만. 모바일·태블릿 전체 멤버 모달에서 초대 링크 모달로 이어질 때 사용 */
+  onInvite?: () => void;
+  canManageMembers?: boolean;
 };
 
 export function TeamCard({
@@ -53,11 +59,13 @@ export function TeamCard({
   onEditTeam,
   onDeleteTeam,
   onLeaveTeam,
-  memberImages = [],
+  memberImages = EMPTY_MEMBER_IMAGES,
   members,
   memberCount,
   className,
   statsClassName,
+  onInvite,
+  canManageMembers = false,
 }: TeamCardProps) {
   const normalizedMembers = useMemo<MemberCardItem[]>(
     () =>
@@ -88,8 +96,29 @@ export function TeamCard({
     onModalClose,
   } = useMemberCardModalState({ defaultModeOnClose: 'all' });
 
-  const visibleMemberImages = memberImages.slice(0, 3);
-  const showMemberSummary = visibleMemberImages.length > 0 || normalizedMembers.length > 0 || typeof memberCount === 'number';
+  const handleInviteFromMemberModal = useCallback(() => {
+    onModalClose();
+    onInvite?.();
+  }, [onModalClose, onInvite]);
+
+  const displayMemberCount =
+    typeof memberCount === 'number' ? memberCount : sortedMembers.length;
+  /** 모바일·태블릿: 인원 3 이하이면 그만큼만, 4명 이상이면 최대 3명까지 */
+  const visibleFaceCount = Math.min(3, displayMemberCount, sortedMembers.length);
+  const visibleMembers = sortedMembers.slice(0, visibleFaceCount);
+  const showMemberSummary = displayMemberCount > 0;
+
+  const memberCardModalProps: MemberCardModalProps = {
+    isOpen: isMemberModalOpen,
+    open: openMemberModal,
+    onClose: onModalClose,
+    modalMode: memberModalMode,
+    selectedMember: memberModalSelected,
+    members: sortedMembers,
+    onMemberClickInList,
+    onBackToList: memberDetailFromAllList ? onBackToList : undefined,
+    onInvite: canManageMembers && onInvite ? handleInviteFromMemberModal : undefined,
+  };
 
   return (
     <article
@@ -108,21 +137,18 @@ export function TeamCard({
             className="inline-flex h-[40px] items-center rounded-[12px] border border-[var(--Border-Primary,#E2E8F0)] px-[10px] lg:hidden"
           >
             <div className="flex items-center">
-              {visibleMemberImages.map((imageSrc, idx) => (
-                <span
-                  key={`${String(imageSrc)}-${idx}`}
-                  className={cn('inline-flex', idx > 0 && '-ml-1')}
-                >
+              {visibleMembers.map((member, idx) => (
+                <span key={member.id} className={cn('inline-flex', idx > 0 && '-ml-1')}>
                   <Profile
                     size="sm"
-                    imageSrc={imageSrc}
+                    imageSrc={member.imageSrc}
                     decorative
                     className="md:hidden"
                     borderClassName="ring-1 ring-background-primary"
                   />
                   <Profile
                     size="md"
-                    imageSrc={imageSrc}
+                    imageSrc={member.imageSrc}
                     decorative
                     className="hidden md:inline-flex"
                     borderClassName="ring-1 ring-background-primary"
@@ -130,9 +156,9 @@ export function TeamCard({
                 </span>
               ))}
             </div>
-            {typeof memberCount === 'number' && (
-              <span className="ml-2 text-lg font-medium leading-none text-txt-default">{memberCount}</span>
-            )}
+            <span className="ml-2 text-lg font-medium leading-none text-txt-default tabular-nums">
+              {displayMemberCount}
+            </span>
           </button>
         )}
       </header>
@@ -197,16 +223,7 @@ export function TeamCard({
           }
         />
       </div>
-      <MemberCardModal
-        isOpen={isMemberModalOpen}
-        open={openMemberModal}
-        onClose={onModalClose}
-        modalMode={memberModalMode}
-        selectedMember={memberModalSelected}
-        members={sortedMembers}
-        onMemberClickInList={onMemberClickInList}
-        onBackToList={memberDetailFromAllList ? onBackToList : undefined}
-      />
+      <MemberCardModal {...memberCardModalProps} />
     </article>
   );
 }

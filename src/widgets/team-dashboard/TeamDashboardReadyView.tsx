@@ -1,11 +1,10 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { TeamCard } from '@/shared/ui/team/TeamCard';
 import { MemberCard } from '@/shared/ui/profile';
 import { TaskBoardView } from '@/features/task-board/ui';
-import { TASK_QUERY_KEYS } from '@/features/task/lib/queryKeys';
-import { getTaskList } from '@/features/task/api/getTaskList';
 import type { TeamDashboardViewModel } from '@/features/group/hooks/useTeamDashboard';
 import { useGroupTasksQuery } from '@/features/group/hooks/useGroupTasksQuery';
 import { useUserQuery } from '@/features/user/hooks/useUserQuery';
@@ -21,6 +20,8 @@ import { TeamDashboardLeaveTeamModal } from './TeamDashboardLeaveTeamModal';
 import { useTeamDashboardGroupActions } from './useTeamDashboardGroupActions';
 import { toTaskBoard } from './taskBoardAdapter';
 
+const ENABLE_TASK_BOARD_CARD_NAV_TO_LIST = true;
+
 type ReadyVm = Extract<TeamDashboardViewModel, { phase: 'ready' }>;
 
 type Props = {
@@ -28,7 +29,8 @@ type Props = {
 };
 
 export function TeamDashboardReadyView({ vm }: Props) {
-  const { group, memberCardItems, memberImagesPreview, isFetching } = vm;
+  const router = useRouter();
+  const { groupIdStr, group, memberCardItems, isFetching } = vm;
   const { data: groupTasks = [] } = useGroupTasksQuery(group.id);
   const { data: me } = useUserQuery();
   const { handleCreateTaskGroup, handleUpdateTaskGroup, handleDeleteTaskGroup, handleToggleTask, handleCompleteTaskGroupByDrop } =
@@ -71,6 +73,13 @@ export function TeamDashboardReadyView({ vm }: Props) {
     [group.taskLists, taskListQueries],
   );
   const initialBoard = useMemo(() => toTaskBoard(boardTaskLists), [boardTaskLists]);
+  const handleOpenTaskList = ENABLE_TASK_BOARD_CARD_NAV_TO_LIST
+    ? (taskGroupId: string) => {
+        void router.push(
+          `/${encodeURIComponent(groupIdStr)}/task-lists/${encodeURIComponent(taskGroupId)}`,
+        );
+      }
+    : undefined;
 
   const {
     deleteModal,
@@ -99,7 +108,7 @@ export function TeamDashboardReadyView({ vm }: Props) {
 
       <div
         className="relative flex min-h-full flex-1 flex-col gap-6 bg-background-secondary p-4 md:p-6"
-        aria-busy={isFetching}
+        {...(isFetching ? { 'aria-busy': true as const } : {})}
       >
         {isFetching ? (
           <div
@@ -112,7 +121,6 @@ export function TeamDashboardReadyView({ vm }: Props) {
           progressPercent={progressPercent}
           todayTaskCount={todayTaskCount}
           completedTaskCount={completedTaskCount}
-          memberImages={memberImagesPreview}
           members={memberCardItems}
           memberCount={group.members.length}
           className="w-full max-w-full"
@@ -120,6 +128,8 @@ export function TeamDashboardReadyView({ vm }: Props) {
           onEditTeam={handleEditTeam}
           onDeleteTeam={handleOpenDeleteTeam}
           onLeaveTeam={handleOpenLeaveTeam}
+          onInvite={openInviteModal}
+          canManageMembers={canManageMembers}
         />
 
         <section className="flex min-w-0 flex-col gap-4" aria-labelledby="team-task-board-heading">
@@ -134,6 +144,7 @@ export function TeamDashboardReadyView({ vm }: Props) {
               onCompleteTaskGroupByDrop={handleCompleteTaskGroupByDrop}
               onUpdateTaskGroup={handleUpdateTaskGroup}
               onDeleteTaskGroup={handleDeleteTaskGroup}
+              onOpenTaskList={handleOpenTaskList}
               trailingPanel={
                 <MemberCard
                   members={memberCardItems}

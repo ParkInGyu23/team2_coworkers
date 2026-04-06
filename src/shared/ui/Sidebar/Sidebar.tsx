@@ -45,12 +45,11 @@ export function Sidebar({
         id={sidebarId}
         role="navigation"
         aria-label="사이드바"
+        style={{ width, flexShrink: 0, boxSizing: 'border-box' }}
         className={cn(
-          'flex h-full flex-col shrink-0 bg-background-primary border-r border-[var(--color-border-primary)] transition-[width] duration-200 ease-out overflow-hidden',
+          'flex h-full flex-col bg-background-primary border-r border-background-tertiary transition-[width] duration-200 ease-out motion-reduce:transition-none overflow-hidden',
           className,
         )}
-        style={{ width }}
-        aria-expanded={isExpanded}
       >
         <div className="min-h-0 flex-1 flex flex-col overflow-hidden">{children}</div>
         {footer != null && (
